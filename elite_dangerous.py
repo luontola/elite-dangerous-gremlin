@@ -1,6 +1,9 @@
 import gremlin
-from gremlin.util import parse_guid
+from gremlin.util import parse_guid, log
 from vjoy.vjoy import AxisName
+import os
+import json
+import threading
 
 # GremlinEx plugin script device list
 
@@ -28,15 +31,36 @@ pedals_raw = joy[parse_guid(PEDALS_GUID)]
 joystick_raw = joy[parse_guid(JOYSTICK_GUID)]
 throttle_raw = joy[parse_guid(THROTTLE_GUID)]
 
+status_path = os.path.expanduser(R"~\Saved Games\Frontier Developments\Elite Dangerous\Status.json")
+refresh_interval = 0.5
+refresh_enabled = True
+flags = 0
+
+def refresh_status():
+    if not refresh_enabled:
+        return
+    with open(status_path) as f:
+        data = json.load(f)
+    global flags
+    new_flags = data['Flags']
+    if flags != new_flags:
+        flags = new_flags
+        log(f"flags {flags}")
+    threading.Timer(refresh_interval, refresh_status).start()
+
 @gremlin.input_devices.gremlin_start()
 def on_profile_start():
+    log("on_profile_start")
     vjoy = gremlin.joystick_handling.VJoyProxy()
+    refresh_status()
     adjust_throttle(vjoy)
 
 @gremlin.input_devices.gremlin_stop()
 def on_profile_stop():
-    # stop background threads, if any
-    pass
+    log("on_profile_stop")
+    # stop background threads
+    global refresh_enabled
+    refresh_enabled = False
 
 @pedals.axis(1)
 def on_left_pedal(event, vjoy):
