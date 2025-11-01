@@ -76,6 +76,15 @@ def on(flag):
 def off(flag):
     return not on(flag)
 
+cooldowns = {}
+
+def toggle_with_cooldown(scope, button, cooldown_seconds=2):
+    now = time.time()
+    cooldown_end = cooldowns.get(scope, 0)
+    if cooldown_end < now:
+        cooldowns[scope] = now + cooldown_seconds
+        short_press(button)
+
 def short_press(button):
     button.is_pressed = True
     def release():
@@ -113,19 +122,13 @@ input = 65
 output = 1
 lights_input = throttle_raw.button(input)
 lights_output = vjoy[1].button(output)
-lights_cooldown = 0
 
 @throttle.button(input)
 def sync_lights(event = None):
     log(f"sync_lights status={on(LIGHTS_ON_FLAG)} desired={lights_input.is_pressed}")
     if on(LIGHTS_ON_FLAG) == lights_input.is_pressed:
         return
-    global lights_cooldown
-    log(f"toggle lights? {lights_cooldown} {time.time()}")
-    if lights_cooldown < time.time():
-        log("toggle lights!")
-        lights_cooldown = time.time() + 3
-        short_press(lights_output)
+    toggle_with_cooldown("lights", lights_output)
 
 
 # Night vision
@@ -134,20 +137,13 @@ input = 67
 output = 2
 night_vision_input = throttle_raw.button(input)
 night_vision_output = vjoy[1].button(output)
-night_vision_cooldown = 0
 
 @throttle.button(input)
 def sync_night_vision(event = None):
     log(f"sync_night_vision status={on(NIGHT_VISION_FLAG)} desired={night_vision_input.is_pressed}")
     if on(NIGHT_VISION_FLAG) == night_vision_input.is_pressed:
         return
-    global night_vision_cooldown
-    log(f"toggle night vision? {night_vision_cooldown} {time.time()}")
-    if night_vision_cooldown < time.time():
-        log("toggle night vision!")
-        night_vision_cooldown = time.time() + 3
-        log(f"cool {night_vision_cooldown}")
-        short_press(night_vision_output)
+    toggle_with_cooldown("night vision", night_vision_output)
 
 
 # Throttle
