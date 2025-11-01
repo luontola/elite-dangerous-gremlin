@@ -4,6 +4,7 @@ from vjoy.vjoy import AxisName
 import os
 import json
 import threading
+import time
 
 # GremlinEx plugin script device list
 
@@ -79,7 +80,7 @@ def short_press(button):
     button.is_pressed = True
     def release():
         button.is_pressed = False
-    threading.Timer(0.1, release).start()
+    threading.Timer(0.2, release).start()
 
 
 # Main
@@ -99,24 +100,54 @@ def refresh_status():
         data = json.load(f)
     global flags
     new_flags = data['Flags']
-    if new_flags == flags:
-        return
-    log(f"flags {flags}")
+    if new_flags != flags:
+        log(f"flags {flags}")
     flags = new_flags
     sync_lights()
+    sync_night_vision()
 
 
 # Ship lights
 
-input = 66
+input = 65
 output = 1
-lights_on_input = throttle_raw.button(input)
-lights_on_output = vjoy[1].button(output)
+lights_input = throttle_raw.button(input)
+lights_output = vjoy[1].button(output)
+lights_cooldown = 0
 
 @throttle.button(input)
 def sync_lights(event = None):
-    if on(LIGHTS_ON_FLAG) != lights_on_input.is_pressed:
-        short_press(lights_on_output)
+    log(f"sync_lights status={on(LIGHTS_ON_FLAG)} desired={lights_input.is_pressed}")
+    if on(LIGHTS_ON_FLAG) == lights_input.is_pressed:
+        return
+    global lights_cooldown
+    log(f"toggle lights? {lights_cooldown} {time.time()}")
+    if lights_cooldown < time.time():
+        log("toggle lights!")
+        lights_cooldown = time.time() + 3
+        short_press(lights_output)
+
+
+# Night vision
+
+input = 67
+output = 2
+night_vision_input = throttle_raw.button(input)
+night_vision_output = vjoy[1].button(output)
+night_vision_cooldown = 0
+
+@throttle.button(input)
+def sync_night_vision(event = None):
+    log(f"sync_night_vision status={on(NIGHT_VISION_FLAG)} desired={night_vision_input.is_pressed}")
+    if on(NIGHT_VISION_FLAG) == night_vision_input.is_pressed:
+        return
+    global night_vision_cooldown
+    log(f"toggle night vision? {night_vision_cooldown} {time.time()}")
+    if night_vision_cooldown < time.time():
+        log("toggle night vision!")
+        night_vision_cooldown = time.time() + 3
+        log(f"cool {night_vision_cooldown}")
+        short_press(night_vision_output)
 
 
 # Throttle
