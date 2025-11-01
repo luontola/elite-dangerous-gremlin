@@ -78,7 +78,7 @@ def off(flag):
 
 cooldowns = {}
 
-def toggle_with_cooldown(scope, button, cooldown_seconds=2):
+def toggle_with_cooldown(scope, button, cooldown_seconds=1.1):
     now = time.time()
     cooldown_end = cooldowns.get(scope, 0)
     if cooldown_end < now:
@@ -112,8 +112,11 @@ def refresh_status():
     if new_flags != flags:
         log(f"flags {flags}")
     flags = new_flags
+    log("")
     sync_lights()
     sync_night_vision()
+    sync_landing_gear()
+    sync_hardpoints()
 
 
 # Ship lights
@@ -125,8 +128,10 @@ lights_output = vjoy[1].button(output)
 
 @throttle.button(input)
 def sync_lights(event = None):
-    log(f"sync_lights status={on(LIGHTS_ON_FLAG)} desired={lights_input.is_pressed}")
-    if on(LIGHTS_ON_FLAG) == lights_input.is_pressed:
+    actual = on(LIGHTS_ON_FLAG)
+    desired = lights_input.is_pressed
+    log(f"sync_lights status={actual} desired={desired}")
+    if actual == desired:
         return
     toggle_with_cooldown("lights", lights_output)
 
@@ -140,10 +145,46 @@ night_vision_output = vjoy[1].button(output)
 
 @throttle.button(input)
 def sync_night_vision(event = None):
-    log(f"sync_night_vision status={on(NIGHT_VISION_FLAG)} desired={night_vision_input.is_pressed}")
-    if on(NIGHT_VISION_FLAG) == night_vision_input.is_pressed:
+    actual = on(NIGHT_VISION_FLAG)
+    desired = night_vision_input.is_pressed
+    log(f"sync_night_vision actual={actual} desired={desired}")
+    if actual == desired:
         return
     toggle_with_cooldown("night vision", night_vision_output)
+
+
+# Landing gear
+
+input = 74
+output = 3
+landing_gear_input = throttle_raw.button(input)
+landing_gear_output = vjoy[1].button(output)
+
+@throttle.button(input)
+def sync_landing_gear(event = None):
+    actual = on(LANDING_GEAR_DOWN_FLAG)
+    desired = landing_gear_input.is_pressed
+    log(f"sync_landing_gear actual={actual} desired={desired}")
+    if actual == desired:
+        return
+    toggle_with_cooldown("landing gear", landing_gear_output)
+
+
+# Hardpoints
+
+input = 93
+output = 4
+hardpoints_input = throttle_raw.button(input)
+hardpoints_output = vjoy[1].button(output)
+
+@throttle.button(input)
+def sync_hardpoints(event = None):
+    actual = on(HARDPOINTS_DEPLOYED_FLAG)
+    desired = hardpoints_input.is_pressed
+    log(f"sync_hardpoints actual={actual} desired={desired}")
+    if actual == desired:
+        return
+    toggle_with_cooldown("hardpoints", hardpoints_output)
 
 
 # Throttle
