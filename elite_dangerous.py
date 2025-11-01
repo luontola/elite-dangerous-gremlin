@@ -5,6 +5,7 @@ import os
 import json
 import threading
 import time
+import traceback
 
 # GremlinEx plugin script device list
 
@@ -78,12 +79,17 @@ def off(flag):
 
 cooldowns = {}
 
+# The default cooldown is a bit over twice as long as the refresh_status interval.
+# This will cause the toggle to be retried on every third refresh.
 def toggle_with_cooldown(scope, button, cooldown_seconds=1.1):
     now = time.time()
     cooldown_end = cooldowns.get(scope, 0)
     if cooldown_end < now:
+        log(f"Toggling {scope}!")
         cooldowns[scope] = now + cooldown_seconds
         short_press(button)
+    else:
+        log(f"Cooldown active for {scope}, skipping toggle.")
 
 def short_press(button):
     button.is_pressed = True
@@ -105,18 +111,24 @@ def on_profile_stop():
 
 @gremlin.input_devices.periodic(0.5)
 def refresh_status():
-    with open(status_path) as f:
-        data = json.load(f)
-    global flags
-    new_flags = data['Flags']
-    if new_flags != flags:
-        log(f"flags {flags}")
-    flags = new_flags
-    log("")
-    sync_lights()
-    sync_night_vision()
-    sync_landing_gear()
-    sync_hardpoints()
+    try:
+        #log("---")
+        with open(status_path) as f:
+            data = json.load(f)
+        global flags
+        new_flags = data['Flags']
+        if new_flags != flags:
+            log(f"flags {flags}")
+        flags = new_flags
+        sync_lights()
+        sync_night_vision()
+        sync_landing_gear()
+        sync_hardpoints()
+    except Exception as e:
+        # Reading the file may fail if we read it at a bad time.
+        # For example the file may be empty, so parsing the JSON fails.
+        # If the exception is not caught, gremlin stops the periodic calls.
+        log(f"refresh_status failed:\n{traceback.format_exc()}")
 
 
 # Ship lights
@@ -130,7 +142,7 @@ lights_output = vjoy[1].button(output)
 def sync_lights(event = None):
     actual = on(LIGHTS_ON_FLAG)
     desired = lights_input.is_pressed
-    log(f"sync_lights status={actual} desired={desired}")
+    #log(f"sync_lights status={actual} desired={desired}")
     if actual == desired:
         return
     toggle_with_cooldown("lights", lights_output)
@@ -147,7 +159,7 @@ night_vision_output = vjoy[1].button(output)
 def sync_night_vision(event = None):
     actual = on(NIGHT_VISION_FLAG)
     desired = night_vision_input.is_pressed
-    log(f"sync_night_vision actual={actual} desired={desired}")
+    #log(f"sync_night_vision actual={actual} desired={desired}")
     if actual == desired:
         return
     toggle_with_cooldown("night vision", night_vision_output)
@@ -164,7 +176,7 @@ landing_gear_output = vjoy[1].button(output)
 def sync_landing_gear(event = None):
     actual = on(LANDING_GEAR_DOWN_FLAG)
     desired = landing_gear_input.is_pressed
-    log(f"sync_landing_gear actual={actual} desired={desired}")
+    #log(f"sync_landing_gear actual={actual} desired={desired}")
     if actual == desired:
         return
     toggle_with_cooldown("landing gear", landing_gear_output)
@@ -181,7 +193,7 @@ hardpoints_output = vjoy[1].button(output)
 def sync_hardpoints(event = None):
     actual = on(HARDPOINTS_DEPLOYED_FLAG)
     desired = hardpoints_input.is_pressed
-    log(f"sync_hardpoints actual={actual} desired={desired}")
+    #log(f"sync_hardpoints actual={actual} desired={desired}")
     if actual == desired:
         return
     toggle_with_cooldown("hardpoints", hardpoints_output)
