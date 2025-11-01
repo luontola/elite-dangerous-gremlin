@@ -31,36 +31,95 @@ pedals_raw = joy[parse_guid(PEDALS_GUID)]
 joystick_raw = joy[parse_guid(JOYSTICK_GUID)]
 throttle_raw = joy[parse_guid(THROTTLE_GUID)]
 
+# reading game status
 status_path = os.path.expanduser(R"~\Saved Games\Frontier Developments\Elite Dangerous\Status.json")
-refresh_interval = 0.5
-refresh_enabled = True
 flags = 0
 
-def refresh_status():
-    if not refresh_enabled:
-        return
-    with open(status_path) as f:
-        data = json.load(f)
-    global flags
-    new_flags = data['Flags']
-    if flags != new_flags:
-        flags = new_flags
-        log(f"flags {flags}")
-    threading.Timer(refresh_interval, refresh_status).start()
+DOCKED_FLAG = 0x00000001
+LANDED_FLAG = 0x00000002
+LANDING_GEAR_DOWN_FLAG = 0x00000004
+SHIELDS_UP_FLAG = 0x00000008
+SUPERCRUISE_FLAG = 0x00000010
+FLIGHT_ASSIST_OFF_FLAG = 0x00000020
+HARDPOINTS_DEPLOYED_FLAG = 0x00000040
+IN_WING_FLAG = 0x00000080
+LIGHTS_ON_FLAG = 0x00000100
+CARGO_SCOOP_DEPLOYED_FLAG = 0x00000200
+SILENT_RUNNING_FLAG = 0x00000400
+SCOOPING_FUEL_FLAG = 0x00000800
+SRV_HANDBRAKE_FLAG = 0x00001000
+SRV_TURRET_VIEW_FLAG = 0x00002000
+SRV_TURRET_RETRACTED_FLAG = 0x00004000
+SRV_DRIVE_ASSIST_FLAG = 0x00008000
+FSD_MASS_LOCKED_FLAG = 0x00010000
+FSD_CHARGING_FLAG = 0x00020000
+FSD_COOLDOWN_FLAG = 0x00040000
+FUEL_LOW_FLAG = 0x00080000
+OVERHEATING_FLAG = 0x00100000
+HAS_LAT_LON_FLAG = 0x00200000
+IS_IN_DANGER_FLAG = 0x00400000
+BEING_INTERDICTED_FLAG = 0x00800000
+IN_MAIN_SHIP_FLAG = 0x01000000
+IN_FIGHTER_FLAG = 0x02000000
+IN_SRV_FLAG = 0x04000000
+ANALYSIS_MODE_FLAG = 0x08000000
+NIGHT_VISION_FLAG = 0x10000000
+ALTITUDE_AVG_RADIUS_FLAG = 0x20000000
+FSD_JUMP_FLAG = 0x40000000
+SRV_HIGH_BEAM_FLAG = 0x80000000
+
+def on(flag):
+    return (flags & flag) == flag
+
+def off(flag):
+    return not on(flag)
+
+def short_press(button):
+    button.is_pressed = True
+    def release():
+        button.is_pressed = False
+    threading.Timer(0.1, release).start()
+
+
+# Main
 
 @gremlin.input_devices.gremlin_start()
 def on_profile_start():
     log("on_profile_start")
     vjoy = gremlin.joystick_handling.VJoyProxy()
-    refresh_status()
     adjust_throttle(vjoy)
 
 @gremlin.input_devices.gremlin_stop()
 def on_profile_stop():
     log("on_profile_stop")
-    # stop background threads
-    global refresh_enabled
-    refresh_enabled = False
+
+@gremlin.input_devices.periodic(0.5)
+def refresh_status(vjoy):
+    with open(status_path) as f:
+        data = json.load(f)
+    global flags
+    new_flags = data['Flags']
+    if new_flags == flags:
+        return
+    log(f"flags {flags}")
+    flags = new_flags
+    sync_lights(vjoy)
+
+
+# Ship lights
+
+LIGHTS_ON_BTN = 66
+
+@throttle.button(LIGHTS_ON_BTN)
+def on_lights_button(event, vjoy):
+    sync_lights(vjoy)
+
+def sync_lights(vjoy):
+    if on(LIGHTS_ON_FLAG) != throttle_raw.button(LIGHTS_ON_BTN).is_pressed:
+        short_press(vjoy[1].button(1))
+
+
+# Throttle
 
 @pedals.axis(1)
 def on_left_pedal(event, vjoy):
