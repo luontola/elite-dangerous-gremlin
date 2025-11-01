@@ -25,7 +25,8 @@ joystick = gremlin.input_devices.JoystickDecorator(JOYSTICK_NAME, JOYSTICK_GUID,
 throttle = gremlin.input_devices.JoystickDecorator(THROTTLE_NAME, THROTTLE_GUID, "Default")
 pedals = gremlin.input_devices.JoystickDecorator(PEDALS_NAME, PEDALS_GUID, "Default")
 
-# reading input devices
+# device access
+vjoy = gremlin.joystick_handling.VJoyProxy()
 joy = gremlin.input_devices.JoystickProxy()
 pedals_raw = joy[parse_guid(PEDALS_GUID)]
 joystick_raw = joy[parse_guid(JOYSTICK_GUID)]
@@ -86,15 +87,14 @@ def short_press(button):
 @gremlin.input_devices.gremlin_start()
 def on_profile_start():
     log("on_profile_start")
-    vjoy = gremlin.joystick_handling.VJoyProxy()
-    adjust_throttle(vjoy)
+    adjust_throttle()
 
 @gremlin.input_devices.gremlin_stop()
 def on_profile_stop():
     log("on_profile_stop")
 
 @gremlin.input_devices.periodic(0.5)
-def refresh_status(vjoy):
+def refresh_status():
     with open(status_path) as f:
         data = json.load(f)
     global flags
@@ -103,33 +103,33 @@ def refresh_status(vjoy):
         return
     log(f"flags {flags}")
     flags = new_flags
-    sync_lights(vjoy)
+    sync_lights()
 
 
 # Ship lights
 
-LIGHTS_ON_BTN = 66
+input = 66
+output = 1
+lights_on_input = throttle_raw.button(input)
+lights_on_output = vjoy[1].button(output)
 
-@throttle.button(LIGHTS_ON_BTN)
-def on_lights_button(event, vjoy):
-    sync_lights(vjoy)
-
-def sync_lights(vjoy):
-    if on(LIGHTS_ON_FLAG) != throttle_raw.button(LIGHTS_ON_BTN).is_pressed:
-        short_press(vjoy[1].button(1))
+@throttle.button(input)
+def sync_lights(event = None):
+    if on(LIGHTS_ON_FLAG) != lights_on_input.is_pressed:
+        short_press(lights_on_output)
 
 
 # Throttle
 
 @pedals.axis(1)
-def on_left_pedal(event, vjoy):
-    adjust_throttle(vjoy)
+def on_left_pedal(event):
+    adjust_throttle()
 
 @pedals.axis(2)
-def on_right_pedal(event, vjoy):
-    adjust_throttle(vjoy)
+def on_right_pedal(event):
+    adjust_throttle()
 
-def adjust_throttle(vjoy):
+def adjust_throttle():
     # scale to -1..0 range
     backward = -1 * scaled_0_to_1(pedals_raw.axis(1).value)
     # scale to 0..1 range
