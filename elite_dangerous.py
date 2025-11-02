@@ -231,15 +231,20 @@ def scaled_0_to_1(value):
     return (value + 1) / 2
 
 
-class TestStringMethods(unittest.TestCase):
-
-    def test_upper(self):
-        self.assertEqual('foo'.upper(), 'FOO')
+class test_scaled_0_to_1(unittest.TestCase):
+    def test_scales_an_axis_to_range_0_to_1(self):
+        for input, expected in [
+                (-1, 0),
+                ( 0, 0.5),
+                ( 1, 1)
+            ]:
+            with self.subTest(input=input, expected=expected):
+                self.assertEqual(scaled_0_to_1(input), expected)
 
 def run_unit_tests():
     loader = unittest.TestLoader()
     suite = unittest.TestSuite([
-        loader.loadTestsFromTestCase(TestStringMethods),
+        loader.loadTestsFromTestCase(test_scaled_0_to_1),
     ])
 
     with io.StringIO() as buffer:
