@@ -1,11 +1,13 @@
 import gremlin
 from gremlin.util import parse_guid, log
 from vjoy.vjoy import AxisName
-import os
+import io
 import json
+import os
 import threading
 import time
 import traceback
+import unittest
 
 # GremlinEx plugin script device list
 
@@ -227,3 +229,26 @@ def adjust_throttle():
 # scales a -1..1 value to 0..1 range
 def scaled_0_to_1(value):
     return (value + 1) / 2
+
+
+class TestStringMethods(unittest.TestCase):
+
+    def test_upper(self):
+        self.assertEqual('foo'.upper(), 'FOO')
+
+def run_unit_tests():
+    loader = unittest.TestLoader()
+    suite = unittest.TestSuite([
+        loader.loadTestsFromTestCase(TestStringMethods),
+    ])
+
+    with io.StringIO() as buffer:
+        runner = unittest.TextTestRunner(stream=buffer, verbosity=2)
+        result = runner.run(suite)
+        output = buffer.getvalue()
+
+    log(f"Unit test results:\n\n{output}")
+    if not result.wasSuccessful():
+        raise RuntimeError("Unit tests failed")
+
+run_unit_tests()
