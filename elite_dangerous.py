@@ -25,16 +25,26 @@ PEDALS_GUID = "36ae6380aae011f08001444553540000"
 
 # plugin decorator definitions
 ## decorators for mode Default
-joystick = gremlin.input_devices.JoystickDecorator(JOYSTICK_NAME, JOYSTICK_GUID, "Default")
-throttle = gremlin.input_devices.JoystickDecorator(THROTTLE_NAME, THROTTLE_GUID, "Default")
-pedals = gremlin.input_devices.JoystickDecorator(PEDALS_NAME, PEDALS_GUID, "Default")
+DEFAULT_MODE = "Default"
+joystick = gremlin.input_devices.JoystickDecorator(JOYSTICK_NAME, JOYSTICK_GUID, DEFAULT_MODE)
+throttle = gremlin.input_devices.JoystickDecorator(THROTTLE_NAME, THROTTLE_GUID, DEFAULT_MODE)
+pedals = gremlin.input_devices.JoystickDecorator(PEDALS_NAME, PEDALS_GUID, DEFAULT_MODE)
+
+# alternative to using the above decorators
+## converts a JoystickProxy button to a JoystickDecorator button
+def on_button(input, mode=DEFAULT_MODE):
+    return gremlin.input_devices._button(button_id=input._index, device_guid=input._joystick_guid, mode=mode)
+
+## converts a JoystickProxy axis to a JoystickDecorator axis
+def on_axis(input, mode=DEFAULT_MODE):
+    return gremlin.input_devices._axis(axis_id=input._index, device_guid=input._joystick_guid, mode=mode)
 
 # device access
 vjoy = gremlin.joystick_handling.VJoyProxy()
 joy = gremlin.input_devices.JoystickProxy()
-pedals_raw = joy[parse_guid(PEDALS_GUID)]
 joystick_raw = joy[parse_guid(JOYSTICK_GUID)]
 throttle_raw = joy[parse_guid(THROTTLE_GUID)]
+pedals_raw = joy[parse_guid(PEDALS_GUID)]
 
 # reading game status
 status_path = os.path.expanduser(R"~\Saved Games\Frontier Developments\Elite Dangerous\Status.json")
@@ -138,7 +148,7 @@ def refresh_status():
 lights_input = throttle_raw.button(65)
 lights_output = vjoy[1].button(1)
 
-@throttle.button(lights_input._index)
+@on_button(lights_input)
 def sync_lights(event = None):
     actual = on(LIGHTS_ON_FLAG)
     desired = lights_input.is_pressed
@@ -153,7 +163,7 @@ def sync_lights(event = None):
 night_vision_input = throttle_raw.button(67)
 night_vision_output = vjoy[1].button(2)
 
-@throttle.button(night_vision_input._index)
+@on_button(night_vision_input)
 def sync_night_vision(event = None):
     actual = on(NIGHT_VISION_FLAG)
     desired = night_vision_input.is_pressed
@@ -168,7 +178,7 @@ def sync_night_vision(event = None):
 landing_gear_input = throttle_raw.button(74)
 landing_gear_output = vjoy[1].button(3)
 
-@throttle.button(landing_gear_input._index)
+@on_button(landing_gear_input)
 def sync_landing_gear(event = None):
     actual = on(LANDING_GEAR_DOWN_FLAG)
     desired = landing_gear_input.is_pressed
@@ -183,7 +193,7 @@ def sync_landing_gear(event = None):
 hardpoints_input = throttle_raw.button(93)
 hardpoints_output = vjoy[1].button(4)
 
-@throttle.button(hardpoints_input._index)
+@on_button(hardpoints_input)
 def sync_hardpoints(event = None):
     actual = on(HARDPOINTS_DEPLOYED_FLAG)
     desired = hardpoints_input.is_pressed
@@ -199,11 +209,11 @@ right_throttle_input = throttle_raw.axis(4)
 left_pedal_input = pedals_raw.axis(1)
 throttle_output = vjoy[1].axis(AxisName.RX)
 
-@throttle.axis(right_throttle_input._index)
+@on_axis(right_throttle_input)
 def on_left_pedal(event):
     adjust_throttle()
 
-@pedals.axis(left_pedal_input._index)
+@on_axis(left_pedal_input)
 def on_right_pedal(event):
     adjust_throttle()
 
