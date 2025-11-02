@@ -203,33 +203,52 @@ def sync_hardpoints(event = None):
 
 # Throttle
 
-@pedals.axis(1)
+right_throttle = throttle_raw.axis(4)
+left_pedal = pedals_raw.axis(1)
+
+@throttle.axis(right_throttle._index)
 def on_left_pedal(event):
     adjust_throttle()
 
-@pedals.axis(2)
+@pedals.axis(left_pedal._index)
 def on_right_pedal(event):
     adjust_throttle()
 
 def adjust_throttle():
-    # scale to -1..0 range
-    backward = -1 * scaled_0_to_1(pedals_raw.axis(1).value)
-    # scale to 0..1 range
-    forward = scaled_0_to_1(pedals_raw.axis(2).value)
-    # backward takes priority if both pedals are pressed (panic reverse),
-    # but filter out light presses near the deadzone
-    if backward < -0.25:
-        value = backward # strong backward press
-    elif forward > 0.25:
-        value = forward # strong forward press
-    else:
-        value = backward + forward # light presses or idle
-    vjoy[1].axis(AxisName.RX).value = value
+    vjoy[1].axis(AxisName.RX).value = calculate_throttle(
+        forward = right_throttle.value * -1,
+        backward = left_pedal.value,
+    )
 
-# scales a -1..1 value to 0..1 range
+def calculate_throttle(forward, backward):
+    forward = scaled_0_to_1(forward)            #  0..1 range
+    backward = scaled_0_to_1(backward) * -1     # -1..0 range
+    backward = backward * (1 + forward)         # up to -2..0 range, to linearly counter forward and reach exactly -1 when summed
+    return forward + backward                   # -1..1 range
+
+class test_calculate_throttle(unittest.TestCase):
+    def test_no_throttle(self):
+        self.assertEqual(calculate_throttle(forward=-1, backward=-1), 0)
+
+    def test_full_forward(self):
+        self.assertEqual(calculate_throttle(forward=1, backward=-1), 1)
+
+    def test_full_backward(self):
+        self.assertEqual(calculate_throttle(forward=-1, backward=1), -1)
+
+    def test_full_backward_completely_overshadows_full_forward(self):
+        self.assertEqual(calculate_throttle(forward=1, backward=1), -1)
+
+    def test_half_backward_is_needed_to_counter_full_forward(self):
+        self.assertEqual(calculate_throttle(forward=1, backward=0), 0)
+
+    def test_third_backward_is_needed_to_counter_half_forward(self):
+        self.assertAlmostEqual(calculate_throttle(forward=0, backward=-0.333), 0, places=3)
+
+
+# scales a -1..1 axis value to 0..1 range
 def scaled_0_to_1(value):
     return (value + 1) / 2
-
 
 class test_scaled_0_to_1(unittest.TestCase):
     def test_scales_an_axis_to_range_0_to_1(self):
@@ -241,9 +260,11 @@ class test_scaled_0_to_1(unittest.TestCase):
             with self.subTest(input=input, expected=expected):
                 self.assertEqual(scaled_0_to_1(input), expected)
 
+
 def run_unit_tests():
     loader = unittest.TestLoader()
     suite = unittest.TestSuite([
+        loader.loadTestsFromTestCase(test_calculate_throttle),
         loader.loadTestsFromTestCase(test_scaled_0_to_1),
     ])
 
