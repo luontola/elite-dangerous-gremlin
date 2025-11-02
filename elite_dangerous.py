@@ -203,6 +203,23 @@ def sync_hardpoints(event = None):
     toggle_with_cooldown("hardpoints", hardpoints_output)
 
 
+# Map selector
+
+galaxy_map_input = throttle_raw.button(69)
+galaxy_map_output = vjoy[1].button(11)
+system_map_input = throttle_raw.button(70)
+system_map_output = vjoy[1].button(12)
+fss_scanner_input = throttle_raw.button(71)
+fss_scanner_output = vjoy[1].button(13)
+map_selector_input = throttle_raw.button(72)
+
+@on_button(map_selector_input)
+def on_map_selector(event):
+    galaxy_map_output.is_pressed = galaxy_map_input.is_pressed and event.is_pressed
+    system_map_output.is_pressed = system_map_input.is_pressed and event.is_pressed
+    fss_scanner_output.is_pressed = fss_scanner_input.is_pressed and event.is_pressed
+
+
 # Throttle
 
 right_throttle_input = throttle_raw.axis(4)
