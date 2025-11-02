@@ -135,12 +135,10 @@ def refresh_status():
 
 # Ship lights
 
-input = 65
-output = 1
-lights_input = throttle_raw.button(input)
-lights_output = vjoy[1].button(output)
+lights_input = throttle_raw.button(65)
+lights_output = vjoy[1].button(1)
 
-@throttle.button(input)
+@throttle.button(lights_input._index)
 def sync_lights(event = None):
     actual = on(LIGHTS_ON_FLAG)
     desired = lights_input.is_pressed
@@ -152,12 +150,10 @@ def sync_lights(event = None):
 
 # Night vision
 
-input = 67
-output = 2
-night_vision_input = throttle_raw.button(input)
-night_vision_output = vjoy[1].button(output)
+night_vision_input = throttle_raw.button(67)
+night_vision_output = vjoy[1].button(2)
 
-@throttle.button(input)
+@throttle.button(night_vision_input._index)
 def sync_night_vision(event = None):
     actual = on(NIGHT_VISION_FLAG)
     desired = night_vision_input.is_pressed
@@ -169,12 +165,10 @@ def sync_night_vision(event = None):
 
 # Landing gear
 
-input = 74
-output = 3
-landing_gear_input = throttle_raw.button(input)
-landing_gear_output = vjoy[1].button(output)
+landing_gear_input = throttle_raw.button(74)
+landing_gear_output = vjoy[1].button(3)
 
-@throttle.button(input)
+@throttle.button(landing_gear_input._index)
 def sync_landing_gear(event = None):
     actual = on(LANDING_GEAR_DOWN_FLAG)
     desired = landing_gear_input.is_pressed
@@ -186,12 +180,10 @@ def sync_landing_gear(event = None):
 
 # Hardpoints
 
-input = 93
-output = 4
-hardpoints_input = throttle_raw.button(input)
-hardpoints_output = vjoy[1].button(output)
+hardpoints_input = throttle_raw.button(93)
+hardpoints_output = vjoy[1].button(4)
 
-@throttle.button(input)
+@throttle.button(hardpoints_input._index)
 def sync_hardpoints(event = None):
     actual = on(HARDPOINTS_DEPLOYED_FLAG)
     desired = hardpoints_input.is_pressed
@@ -203,21 +195,22 @@ def sync_hardpoints(event = None):
 
 # Throttle
 
-right_throttle = throttle_raw.axis(4)
-left_pedal = pedals_raw.axis(1)
+right_throttle_input = throttle_raw.axis(4)
+left_pedal_input = pedals_raw.axis(1)
+throttle_output = vjoy[1].axis(AxisName.RX)
 
-@throttle.axis(right_throttle._index)
+@throttle.axis(right_throttle_input._index)
 def on_left_pedal(event):
     adjust_throttle()
 
-@pedals.axis(left_pedal._index)
+@pedals.axis(left_pedal_input._index)
 def on_right_pedal(event):
     adjust_throttle()
 
 def adjust_throttle():
-    vjoy[1].axis(AxisName.RX).value = calculate_throttle(
-        forward = right_throttle.value * -1,
-        backward = left_pedal.value,
+    throttle_output.value = calculate_throttle(
+        forward = right_throttle_input.value * -1,
+        backward = left_pedal_input.value,
     )
 
 def calculate_throttle(forward, backward):
