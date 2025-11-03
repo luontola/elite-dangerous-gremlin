@@ -49,6 +49,7 @@ pedals_raw = joy[parse_guid(PEDALS_GUID)]
 # reading game status
 status_path = os.path.expanduser(R"~\Saved Games\Frontier Developments\Elite Dangerous\Status.json")
 flags = 0
+gui_focus = 0
 
 DOCKED_FLAG = 0x00000001
 LANDED_FLAG = 0x00000002
@@ -82,6 +83,19 @@ NIGHT_VISION_FLAG = 0x10000000
 ALTITUDE_AVG_RADIUS_FLAG = 0x20000000
 FSD_JUMP_FLAG = 0x40000000
 SRV_HIGH_BEAM_FLAG = 0x80000000
+
+GUI_NO_FOCUS = 0
+GUI_INTERNAL_PANEL = 1 # right hand side
+GUI_EXTERNAL_PANEL = 2 # left hand side
+GUI_COMMS_PANEL = 3 # top
+GUI_ROLE_PANEL = 4 # bottom
+GUI_STATION_SERVICES = 5
+GUI_GALAXY_MAP = 6
+GUI_SYSTEM_MAP = 7
+GUI_ORRERY = 8
+GUI_FSS_MODE = 9
+GUI_SAA_MODE = 10
+GUI_CODEX = 11
 
 def on(flag):
     return (flags & flag) == flag
@@ -127,15 +141,16 @@ def refresh_status():
         with open(status_path) as f:
             data = json.load(f)
         global flags
-        new_flags = data['Flags']
-        if new_flags != flags:
-            log(f"flags {flags}")
-        flags = new_flags
+        flags = data.get('Flags', 0)
+        global gui_focus
+        gui_focus = data.get('GuiFocus', 0)
         sync_lights()
         sync_night_vision()
         sync_landing_gear()
         sync_cargo_scoop()
         sync_hardpoints()
+        sync_galaxy_map()
+        sync_system_map()
     except Exception as e:
         # Reading the file may fail if we read it at a bad time.
         # For example the file may be empty, so parsing the JSON fails.
@@ -213,21 +228,32 @@ def sync_hardpoints(event = None):
     toggle_with_cooldown("hardpoints", hardpoints_output)
 
 
-# Map selector
+# Galaxy map
 
-galaxy_map_input = throttle_raw.button(69)
+galaxy_map_input = throttle_raw.button(3)
 galaxy_map_output = vjoy[1].button(11)
-system_map_input = throttle_raw.button(70)
-system_map_output = vjoy[1].button(12)
-fss_scanner_input = throttle_raw.button(71)
-fss_scanner_output = vjoy[1].button(13)
-map_selector_input = throttle_raw.button(72)
 
-@on_button(map_selector_input)
-def on_map_selector(event):
-    galaxy_map_output.is_pressed = galaxy_map_input.is_pressed and event.is_pressed
-    system_map_output.is_pressed = system_map_input.is_pressed and event.is_pressed
-    fss_scanner_output.is_pressed = fss_scanner_input.is_pressed and event.is_pressed
+@on_button(galaxy_map_input)
+def sync_galaxy_map(event = None):
+    actual = gui_focus == GUI_GALAXY_MAP
+    desired = galaxy_map_input.is_pressed
+    if actual == desired:
+        return
+    toggle_with_cooldown("galaxy map", galaxy_map_output)
+
+
+# System map
+
+system_map_input = throttle_raw.button(5)
+system_map_output = vjoy[1].button(12)
+
+@on_button(system_map_input)
+def sync_system_map(event = None):
+    actual = gui_focus == GUI_SYSTEM_MAP
+    desired = system_map_input.is_pressed
+    if actual == desired:
+        return
+    toggle_with_cooldown("system map", system_map_output)
 
 
 # Throttle
