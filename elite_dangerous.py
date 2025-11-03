@@ -149,6 +149,7 @@ def refresh_status():
         sync_landing_gear()
         sync_cargo_scoop()
         sync_hardpoints()
+        sync_auto_miner()
         sync_galaxy_map()
         sync_system_map()
     except Exception as e:
@@ -226,6 +227,16 @@ def sync_hardpoints(event = None):
     if actual == desired:
         return
     toggle_with_cooldown("hardpoints", hardpoints_output)
+
+
+# Auto miner
+
+auto_miner_input = throttle_raw.button(86)
+auto_miner_output = vjoy[1].button(6) # primary fire
+
+@on_button(auto_miner_input)
+def sync_auto_miner(event = None):
+    auto_miner_output.is_pressed = auto_miner_input.is_pressed and on(ANALYSIS_MODE_FLAG)
 
 
 # Galaxy map
