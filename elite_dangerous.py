@@ -124,7 +124,6 @@ def on_profile_stop():
 @gremlin.input_devices.periodic(0.5)
 def refresh_status():
     try:
-        #log("---")
         with open(status_path) as f:
             data = json.load(f)
         global flags
@@ -152,7 +151,6 @@ lights_output = vjoy[1].button(1)
 def sync_lights(event = None):
     actual = on(LIGHTS_ON_FLAG)
     desired = lights_input.is_pressed
-    #log(f"sync_lights status={actual} desired={desired}")
     if actual == desired:
         return
     toggle_with_cooldown("lights", lights_output)
@@ -167,7 +165,6 @@ night_vision_output = vjoy[1].button(2)
 def sync_night_vision(event = None):
     actual = on(NIGHT_VISION_FLAG)
     desired = night_vision_input.is_pressed
-    #log(f"sync_night_vision actual={actual} desired={desired}")
     if actual == desired:
         return
     toggle_with_cooldown("night vision", night_vision_output)
@@ -182,7 +179,6 @@ landing_gear_output = vjoy[1].button(3)
 def sync_landing_gear(event = None):
     actual = on(LANDING_GEAR_DOWN_FLAG)
     desired = landing_gear_input.is_pressed
-    #log(f"sync_landing_gear actual={actual} desired={desired}")
     if actual == desired:
         return
     toggle_with_cooldown("landing gear", landing_gear_output)
@@ -197,7 +193,6 @@ hardpoints_output = vjoy[1].button(4)
 def sync_hardpoints(event = None):
     actual = on(HARDPOINTS_DEPLOYED_FLAG)
     desired = hardpoints_input.is_pressed
-    #log(f"sync_hardpoints actual={actual} desired={desired}")
     if actual == desired:
         return
     toggle_with_cooldown("hardpoints", hardpoints_output)
