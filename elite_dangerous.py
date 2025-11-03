@@ -134,6 +134,7 @@ def refresh_status():
         sync_lights()
         sync_night_vision()
         sync_landing_gear()
+        sync_cargo_scoop()
         sync_hardpoints()
     except Exception as e:
         # Reading the file may fail if we read it at a bad time.
@@ -184,10 +185,24 @@ def sync_landing_gear(event = None):
     toggle_with_cooldown("landing gear", landing_gear_output)
 
 
+# Cargo scoop
+
+cargo_scoop_input = throttle_raw.button(76)
+cargo_scoop_output = vjoy[1].button(4)
+
+@on_button(cargo_scoop_input)
+def sync_cargo_scoop(event = None):
+    actual = on(CARGO_SCOOP_DEPLOYED_FLAG)
+    desired = cargo_scoop_input.is_pressed
+    if actual == desired:
+        return
+    toggle_with_cooldown("cargo scoop", cargo_scoop_output)
+
+
 # Hardpoints
 
 hardpoints_input = throttle_raw.button(93)
-hardpoints_output = vjoy[1].button(4)
+hardpoints_output = vjoy[1].button(5)
 
 @on_button(hardpoints_input)
 def sync_hardpoints(event = None):
