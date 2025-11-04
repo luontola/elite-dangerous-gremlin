@@ -304,13 +304,16 @@ class test_calculate_throttle(unittest.TestCase):
     def test_full_backward(self):
         self.assertEqual(calculate_throttle(forward=-1, backward=1), -1)
 
-    def test_full_backward_completely_overshadows_full_forward(self):
+    def test_full_backward_exactly_overshadows_full_forward(self):
         self.assertEqual(calculate_throttle(forward=1, backward=1), -1)
 
-    def test_half_backward_is_needed_to_counter_full_forward(self):
+    def test_full_backward_exactly_overshadows_half_forward(self):
+        self.assertEqual(calculate_throttle(forward=0, backward=1), -1)
+
+    def test_half_backward_is_needed_to_standstill_full_forward(self):
         self.assertEqual(calculate_throttle(forward=1, backward=0), 0)
 
-    def test_third_backward_is_needed_to_counter_half_forward(self):
+    def test_third_backward_is_needed_to_standstill_half_forward(self):
         self.assertAlmostEqual(calculate_throttle(forward=0, backward=-0.333), 0, places=3)
 
 
