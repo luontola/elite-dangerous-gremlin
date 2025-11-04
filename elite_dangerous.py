@@ -97,11 +97,8 @@ GUI_FSS_MODE = 9
 GUI_SAA_MODE = 10
 GUI_CODEX = 11
 
-def on(flag):
+def has_flag(flag):
     return (flags & flag) == flag
-
-def off(flag):
-    return not on(flag)
 
 cooldowns = {}
 
@@ -164,7 +161,7 @@ lights_output = vjoy[1].button(1)
 
 @on_button(lights_input)
 def sync_lights(event = None):
-    actual = on(LIGHTS_ON_FLAG)
+    actual = has_flag(LIGHTS_ON_FLAG)
     desired = lights_input.is_pressed
     if actual == desired:
         return
@@ -178,7 +175,7 @@ night_vision_output = vjoy[1].button(2)
 
 @on_button(night_vision_input)
 def sync_night_vision(event = None):
-    actual = on(NIGHT_VISION_FLAG)
+    actual = has_flag(NIGHT_VISION_FLAG)
     desired = night_vision_input.is_pressed
     if actual == desired:
         return
@@ -192,7 +189,7 @@ landing_gear_output = vjoy[1].button(3)
 
 @on_button(landing_gear_input)
 def sync_landing_gear(event = None):
-    actual = on(LANDING_GEAR_DOWN_FLAG)
+    actual = has_flag(LANDING_GEAR_DOWN_FLAG)
     desired = landing_gear_input.is_pressed
     if actual == desired:
         return
@@ -206,7 +203,7 @@ cargo_scoop_output = vjoy[1].button(4)
 
 @on_button(cargo_scoop_input)
 def sync_cargo_scoop(event = None):
-    actual = on(CARGO_SCOOP_DEPLOYED_FLAG)
+    actual = has_flag(CARGO_SCOOP_DEPLOYED_FLAG)
     desired = cargo_scoop_input.is_pressed
     if actual == desired:
         return
@@ -220,7 +217,7 @@ hardpoints_output = vjoy[1].button(5)
 
 @on_button(hardpoints_input)
 def sync_hardpoints(event = None):
-    actual = on(HARDPOINTS_DEPLOYED_FLAG)
+    actual = has_flag(HARDPOINTS_DEPLOYED_FLAG)
     desired = hardpoints_input.is_pressed
     if actual == desired:
         return
@@ -234,7 +231,7 @@ auto_miner_output = vjoy[1].button(6) # primary fire
 
 @on_button(auto_miner_input)
 def sync_auto_miner(event = None):
-    auto_miner_output.is_pressed = auto_miner_input.is_pressed and on(ANALYSIS_MODE_FLAG)
+    auto_miner_output.is_pressed = auto_miner_input.is_pressed and has_flag(ANALYSIS_MODE_FLAG)
 
 
 # Galaxy map
