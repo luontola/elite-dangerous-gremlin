@@ -207,7 +207,20 @@ def sync_cargo_scoop(event = None):
     desired = cargo_scoop_input.is_pressed
     if actual == desired:
         return
-    toggle_with_cooldown("cargo scoop", cargo_scoop_output)
+    if event is None:
+        # Periodic check noticed that the scoop is in the wrong state.
+        # This happens often during mining: e.g. launching a prospector
+        # closes the scoop momentarily (takes close to 5 seconds).
+        # We should not react to those, but only if the scoop isn't restored soon.
+        def deferred_togggle():
+            actual2 = has_flag(CARGO_SCOOP_DEPLOYED_FLAG)
+            desired2 = cargo_scoop_input.is_pressed
+            if actual == actual2 and desired == desired2:
+                toggle_with_cooldown("cargo scoop", cargo_scoop_output)
+        threading.Timer(5, deferred_togggle).start()
+    else:
+        # the switch was toggled manually
+        toggle_with_cooldown("cargo scoop", cargo_scoop_output)
 
 
 # Hardpoints
