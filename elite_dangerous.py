@@ -285,7 +285,7 @@ def adjust_throttle():
     forward = right_throttle_input.value * -1
     backward = left_pedal_input.value
     if not travel_mode_input.is_pressed:
-        forward = gremlin.input_devices.deadzone(forward, -0.9, 0, 0, 0.5)
+        forward = gremlin.input_devices.deadzone(forward, -0.8, 0, 0, 0.5)
     throttle_output.value = calculate_throttle(forward, backward)
 
 def calculate_throttle(forward, backward):
