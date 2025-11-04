@@ -100,11 +100,28 @@ GUI_CODEX = 11
 def has_flag(flag):
     return (flags & flag) == flag
 
-cooldowns = {}
-
 # The default cooldown is a bit over twice as long as the refresh_status interval.
 # This will cause the toggle to be retried on every third refresh.
-def toggle_with_cooldown(scope, button, cooldown_seconds=1.1):
+REFRESH_INTERVAL = 0.5
+DEFAULT_COOLDOWN = 1.1
+
+cooldowns = {}
+
+def clear_cooldown(scope):
+    cooldowns.pop(scope, None)
+
+def cooldown_then_toggle(scope, button, cooldown_seconds=DEFAULT_COOLDOWN):
+    now = time.time()
+    cooldown_end = cooldowns.get(scope)
+    if cooldown_end is None:
+        log(f"Noticed {scope} out of sync, wait {cooldown_seconds} seconds")
+        cooldowns[scope] = now + cooldown_seconds
+    elif cooldown_end < now:
+        log(f"Toggling {scope}!")
+        clear_cooldown(scope)
+        short_press(button)
+
+def toggle_then_cooldown(scope, button, cooldown_seconds=DEFAULT_COOLDOWN):
     now = time.time()
     cooldown_end = cooldowns.get(scope, 0)
     if cooldown_end < now:
@@ -165,7 +182,7 @@ def sync_lights(event = None):
     desired = lights_input.is_pressed
     if actual == desired:
         return
-    toggle_with_cooldown("lights", lights_output)
+    toggle_then_cooldown("lights", lights_output)
 
 
 # Night vision
@@ -179,7 +196,7 @@ def sync_night_vision(event = None):
     desired = night_vision_input.is_pressed
     if actual == desired:
         return
-    toggle_with_cooldown("night vision", night_vision_output)
+    toggle_then_cooldown("night vision", night_vision_output)
 
 
 # Landing gear
@@ -193,7 +210,7 @@ def sync_landing_gear(event = None):
     desired = landing_gear_input.is_pressed
     if actual == desired:
         return
-    toggle_with_cooldown("landing gear", landing_gear_output)
+    toggle_then_cooldown("landing gear", landing_gear_output)
 
 
 # Cargo scoop
@@ -206,21 +223,16 @@ def sync_cargo_scoop(event = None):
     actual = has_flag(CARGO_SCOOP_DEPLOYED_FLAG)
     desired = cargo_scoop_input.is_pressed
     if actual == desired:
+        clear_cooldown("cargo scoop")
         return
     if event is None:
-        # Periodic check noticed that the scoop is in the wrong state.
-        # This happens often during mining: e.g. launching a prospector
-        # closes the scoop momentarily (takes close to 5 seconds).
-        # We should not react to those, but only if the scoop isn't restored soon.
-        def deferred_togggle():
-            actual2 = has_flag(CARGO_SCOOP_DEPLOYED_FLAG)
-            desired2 = cargo_scoop_input.is_pressed
-            if actual == actual2 and desired == desired2:
-                toggle_with_cooldown("cargo scoop", cargo_scoop_output)
-        threading.Timer(5, deferred_togggle).start()
+        # The cargo scoop closes for nearly 5 seconds when launching prospectors or abandoning limpets.
+        # We shouldn't react to it immediately, but wait 5 seconds to see if the scoop gets redeployed.
+        cooldown_then_toggle("cargo scoop", cargo_scoop_output, 5)
     else:
-        # the switch was toggled manually
-        toggle_with_cooldown("cargo scoop", cargo_scoop_output)
+        # The switch was toggled manually; react immediately
+        short_press(cargo_scoop_output)
+
 
 
 # Hardpoints
@@ -234,7 +246,7 @@ def sync_hardpoints(event = None):
     desired = hardpoints_input.is_pressed
     if actual == desired:
         return
-    toggle_with_cooldown("hardpoints", hardpoints_output)
+    toggle_then_cooldown("hardpoints", hardpoints_output)
 
 
 # Auto miner
