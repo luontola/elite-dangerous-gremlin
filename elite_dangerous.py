@@ -150,8 +150,6 @@ def refresh_status():
         sync_cargo_scoop()
         sync_hardpoints()
         sync_auto_miner()
-        sync_galaxy_map()
-        sync_system_map()
     except Exception as e:
         # Reading the file may fail if we read it at a bad time.
         # For example the file may be empty, so parsing the JSON fails.
@@ -245,12 +243,12 @@ galaxy_map_input = throttle_raw.button(3)
 galaxy_map_output = vjoy[1].button(11)
 
 @on_button(galaxy_map_input)
-def sync_galaxy_map(event = None):
+def on_galaxy_map(event):
     actual = gui_focus == GUI_GALAXY_MAP
-    desired = galaxy_map_input.is_pressed
+    desired = event.is_pressed
     if actual == desired:
         return
-    toggle_with_cooldown("galaxy map", galaxy_map_output)
+    short_press(galaxy_map_output)
 
 
 # System map
@@ -259,12 +257,12 @@ system_map_input = throttle_raw.button(5)
 system_map_output = vjoy[1].button(12)
 
 @on_button(system_map_input)
-def sync_system_map(event = None):
+def on_system_map(event):
     actual = gui_focus == GUI_SYSTEM_MAP
-    desired = system_map_input.is_pressed
+    desired = event.is_pressed
     if actual == desired:
         return
-    toggle_with_cooldown("system map", system_map_output)
+    short_press(system_map_output)
 
 
 # Throttle
