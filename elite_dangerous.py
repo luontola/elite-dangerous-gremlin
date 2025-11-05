@@ -8,6 +8,7 @@ import threading
 import time
 import traceback
 import unittest
+from unittest.mock import Mock
 
 # GremlinEx plugin script device list
 
@@ -136,6 +137,137 @@ def short_press(button):
     def release():
         button.is_pressed = False
     threading.Timer(0.2, release).start()
+
+class ToggleController():
+    def __init__(self, is_synced, output, cooldown_seconds=DEFAULT_COOLDOWN):
+        self._is_synced = is_synced
+        self._output = output
+        self._cooldown_seconds = cooldown_seconds
+        self._cooldown_end = None
+
+    def periodic_sync(self, now = None):
+        if self._is_synced():
+            self._cooldown_end = None
+            return
+        now = now or time.time()
+        if self._cooldown_end is None:
+            self._cooldown_end = now + self._cooldown_seconds
+        elif self._cooldown_end < now:
+            self._cooldown_end = None
+            short_press(self._output)
+
+    def manual_toggle(self):
+        self._cooldown_end = None
+        if self._is_synced():
+            return
+        short_press(self._output)
+
+class test_ToggleController(unittest.TestCase):
+    class FakeButton():
+        def __init__(self):
+            self.is_pressed = None
+
+    def setUp(self):
+        self.output = self.FakeButton()
+        self.aligned = lambda: True
+        self.deviating = lambda: False
+
+    def test_periodic_sync__when_aligned__does_nothing(self):
+        ctrl = ToggleController(self.aligned, self.output, cooldown_seconds=4)
+        now = 1000
+        
+        ctrl.periodic_sync(now)
+
+        self.assertEqual(self.output.is_pressed, None)
+        self.assertEqual(ctrl._cooldown_end, None)
+
+    def test_periodic_sync__when_deviating__starts_a_cooldown(self):
+        ctrl = ToggleController(self.deviating, self.output, cooldown_seconds=4)
+        now = 1000
+        
+        ctrl.periodic_sync(now)
+
+        self.assertEqual(self.output.is_pressed, None)
+        self.assertEqual(ctrl._cooldown_end, 1004)
+
+    def test_periodic_sync__when_deviating_and_in_cooldown__does_nothing(self):
+        ctrl = ToggleController(self.deviating, self.output, cooldown_seconds=4)
+        now = 1000
+        ctrl.periodic_sync(now)
+
+        now = 1003.9
+        ctrl.periodic_sync(now)
+
+        self.assertEqual(self.output.is_pressed, None)
+        self.assertEqual(ctrl._cooldown_end, 1004)
+
+    def test_periodic_sync__when_deviating_and_after_cooldown__presses_the_button_and_clears_the_cooldown(self):
+        ctrl = ToggleController(self.deviating, self.output, cooldown_seconds=4)
+        now = 1000
+        ctrl.periodic_sync(now)
+
+        now = 1004.1
+        ctrl.periodic_sync(now)
+
+        self.assertEqual(self.output.is_pressed, True)
+        self.assertEqual(ctrl._cooldown_end, None)
+
+    def test_periodic_sync__when_aligned_and_in_cooldown__only_clears_the_cooldown(self):
+        is_synced = False
+        ctrl = ToggleController(lambda: is_synced, self.output, cooldown_seconds=4)
+        now = 1000
+        ctrl.periodic_sync(now)
+
+        is_synced = True
+        ctrl.periodic_sync(now)
+
+        self.assertEqual(self.output.is_pressed, None)
+        self.assertEqual(ctrl._cooldown_end, None)
+
+    def test_the_cooldown_uses_the_current_time_and_a_default_delay(self):
+        ctrl = ToggleController(self.deviating, self.output)
+
+        t1 = time.time()
+        ctrl.periodic_sync()
+        t2 = time.time()
+
+        self.assertGreaterEqual(ctrl._cooldown_end, t1 + DEFAULT_COOLDOWN)
+        self.assertLessEqual(ctrl._cooldown_end, t2 + DEFAULT_COOLDOWN)
+
+    def test_manual_toggle__when_aligned__does_nothing(self):
+        ctrl = ToggleController(self.aligned, self.output)
+
+        ctrl.manual_toggle()
+
+        self.assertEqual(self.output.is_pressed, None)
+
+    def test_manual_toggle__when_deviating__presses_the_button(self):
+        ctrl = ToggleController(self.deviating, self.output)
+
+        ctrl.manual_toggle()
+
+        self.assertEqual(self.output.is_pressed, True)
+
+    def test_manual_toggle__when_deviating_and_in_cooldown__presses_the_button_and_clears_the_cooldown(self):
+        ctrl = ToggleController(self.deviating, self.output)
+        ctrl.periodic_sync()
+
+        ctrl.manual_toggle()
+
+        self.assertEqual(ctrl._cooldown_end, None)
+        self.assertEqual(self.output.is_pressed, True)
+
+    def test_manual_toggle__when_aligned_and_in_cooldown__only_clears_the_cooldown(self):
+        is_synced = False
+        ctrl = ToggleController(lambda: is_synced, self.output)
+        ctrl.periodic_sync()
+
+        is_synced = True
+        ctrl.manual_toggle()
+
+        self.assertEqual(ctrl._cooldown_end, None)
+        self.assertEqual(self.output.is_pressed, None)
+
 
 
 # Main
@@ -360,6 +492,7 @@ class test_scaled_0_to_1(unittest.TestCase):
 def run_unit_tests():
     loader = unittest.TestLoader()
     suite = unittest.TestSuite([
+        loader.loadTestsFromTestCase(test_ToggleController),
         loader.loadTestsFromTestCase(test_calculate_throttle),
         loader.loadTestsFromTestCase(test_scaled_0_to_1),
     ])
