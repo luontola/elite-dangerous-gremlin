@@ -106,32 +106,6 @@ def has_flag(flag):
 REFRESH_INTERVAL = 0.5
 DEFAULT_COOLDOWN = 1.1
 
-cooldowns = {}
-
-def clear_cooldown(scope):
-    cooldowns.pop(scope, None)
-
-def cooldown_then_toggle(scope, button, cooldown_seconds=DEFAULT_COOLDOWN):
-    now = time.time()
-    cooldown_end = cooldowns.get(scope)
-    if cooldown_end is None:
-        log(f"Noticed {scope} out of sync, wait {cooldown_seconds} seconds")
-        cooldowns[scope] = now + cooldown_seconds
-    elif cooldown_end < now:
-        log(f"Toggling {scope}!")
-        clear_cooldown(scope)
-        short_press(button)
-
-def toggle_then_cooldown(scope, button, cooldown_seconds=DEFAULT_COOLDOWN):
-    now = time.time()
-    cooldown_end = cooldowns.get(scope, 0)
-    if cooldown_end < now:
-        log(f"Toggling {scope}!")
-        cooldowns[scope] = now + cooldown_seconds
-        short_press(button)
-    else:
-        log(f"Cooldown active for {scope}, skipping toggle.")
-
 def short_press(button):
     button.is_pressed = True
     def release():
@@ -290,11 +264,12 @@ def refresh_status():
         flags = data.get('Flags', 0)
         global gui_focus
         gui_focus = data.get('GuiFocus', 0)
-        sync_lights()
-        sync_night_vision()
-        sync_landing_gear()
-        sync_cargo_scoop()
-        sync_hardpoints()
+
+        lights.periodic_sync()
+        night_vision.periodic_sync()
+        landing_gear.periodic_sync()
+        cargo_scoop.periodic_sync()
+        hardpoints.periodic_sync()
         sync_auto_miner()
     except Exception as e:
         # Reading the file may fail if we read it at a bad time.
@@ -308,13 +283,14 @@ def refresh_status():
 lights_input = throttle_raw.button(65)
 lights_output = vjoy[1].button(1)
 
+lights = ToggleController(
+    is_synced=lambda: has_flag(LIGHTS_ON_FLAG) == lights_input.is_pressed,
+    output=lights_output,
+)
+
 @on_button(lights_input)
-def sync_lights(event = None):
-    actual = has_flag(LIGHTS_ON_FLAG)
-    desired = lights_input.is_pressed
-    if actual == desired:
-        return
-    toggle_then_cooldown("lights", lights_output)
+def on_lights(event):
+    lights.manual_toggle()
 
 
 # Night vision
@@ -322,13 +298,14 @@ def sync_lights(event = None):
 night_vision_input = throttle_raw.button(67)
 night_vision_output = vjoy[1].button(2)
 
+night_vision = ToggleController(
+    is_synced=lambda: has_flag(NIGHT_VISION_FLAG) == night_vision_input.is_pressed,
+    output=night_vision_output,
+)
+
 @on_button(night_vision_input)
-def sync_night_vision(event = None):
-    actual = has_flag(NIGHT_VISION_FLAG)
-    desired = night_vision_input.is_pressed
-    if actual == desired:
-        return
-    toggle_then_cooldown("night vision", night_vision_output)
+def on_night_vision(event):
+    night_vision.manual_toggle()
 
 
 # Landing gear
@@ -336,13 +313,14 @@ def sync_night_vision(event = None):
 landing_gear_input = throttle_raw.button(74)
 landing_gear_output = vjoy[1].button(3)
 
+landing_gear = ToggleController(
+    is_synced=lambda: has_flag(LANDING_GEAR_DOWN_FLAG) == landing_gear_input.is_pressed,
+    output=landing_gear_output,
+)
+
 @on_button(landing_gear_input)
-def sync_landing_gear(event = None):
-    actual = has_flag(LANDING_GEAR_DOWN_FLAG)
-    desired = landing_gear_input.is_pressed
-    if actual == desired:
-        return
-    toggle_then_cooldown("landing gear", landing_gear_output)
+def on_landing_gear(event):
+    landing_gear.manual_toggle()
 
 
 # Cargo scoop
@@ -350,20 +328,16 @@ def sync_landing_gear(event = None):
 cargo_scoop_input = throttle_raw.button(76)
 cargo_scoop_output = vjoy[1].button(4)
 
+cargo_scoop = ToggleController(
+    is_synced=lambda: has_flag(CARGO_SCOOP_DEPLOYED_FLAG) == cargo_scoop_input.is_pressed,
+    output=cargo_scoop_output,
+    # the cargo scoop closes temporarily for nearly 5 seconds when launching prospectors or abandoning limpets
+    cooldown_seconds=5,
+)
+
 @on_button(cargo_scoop_input)
-def sync_cargo_scoop(event = None):
-    actual = has_flag(CARGO_SCOOP_DEPLOYED_FLAG)
-    desired = cargo_scoop_input.is_pressed
-    if actual == desired:
-        clear_cooldown("cargo scoop")
-        return
-    if event is None:
-        # The cargo scoop closes for nearly 5 seconds when launching prospectors or abandoning limpets.
-        # We shouldn't react to it immediately, but wait 5 seconds to see if the scoop gets redeployed.
-        cooldown_then_toggle("cargo scoop", cargo_scoop_output, 5)
-    else:
-        # The switch was toggled manually; react immediately
-        short_press(cargo_scoop_output)
+def on_cargo_scoop(event):
+    cargo_scoop.manual_toggle()
 
 
 
@@ -372,13 +346,14 @@ def sync_cargo_scoop(event = None):
 hardpoints_input = throttle_raw.button(93)
 hardpoints_output = vjoy[1].button(5)
 
+hardpoints = ToggleController(
+    is_synced=lambda: has_flag(HARDPOINTS_DEPLOYED_FLAG) == hardpoints_input.is_pressed,
+    output=hardpoints_output,
+)
+
 @on_button(hardpoints_input)
-def sync_hardpoints(event = None):
-    actual = has_flag(HARDPOINTS_DEPLOYED_FLAG)
-    desired = hardpoints_input.is_pressed
-    if actual == desired:
-        return
-    toggle_then_cooldown("hardpoints", hardpoints_output)
+def on_hardpoints(event):
+    hardpoints.manual_toggle()
 
 
 # Auto miner
