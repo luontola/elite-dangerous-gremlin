@@ -42,6 +42,9 @@ Breaking and going reverse doesn't require reducing the forward thrust.
 Regardless of how much forward thrust there is, pressing the break pedal to the bottom will go full reverse.
 The amount of break pedal that is needed to reach a standstill depends linearly on how much forward thrust there is; with full forward thrust you'll need to press the break pedal halfway.
 
+
+### Travel/combat mode throttle
+
 I use a 3-way switch to adjust the throttle handle movement range and deploying hardpoints.
 When cruising or landing, I want to use the full movement range of the HOTAS throttle for better accuracy.
 But in combat that would hinder quick throttle adjustments, so I'm adding deadzones to the max and min ranges.
@@ -64,7 +67,7 @@ That means the switch may sometimes be out of sync with the game state, but movi
 
 ### Auto fire for laser mining
 
-Holding down the trigger for a long time is tiring (especially since my flight stick has a heavy trigger).
+Holding the trigger down for a long time is tiring (especially since my flight stick has a heavy trigger).
 To make laser mining more relaxing, I use a toggle switch as an alternative key binding for the primary fire.
 But as a safety measure, that switch works only in analysis mode.
 
@@ -73,19 +76,19 @@ But as a safety measure, that switch works only in analysis mode.
 
 These files are provided as-is, without any support or guarantee.
 You should first familiarize yourself with [Joystick Gremlin user plugin development](https://whitemagic.github.io/JoystickGremlin/user_plugins/).
-Or ask ChatGPT.
+Or ask ChatGPT to customize the script.
 
 To set up your devices, choose `Tools > Device Information > Generate plugin script header` in GremlinEx and paste the resulting text from your clipboard.
 That will give you the necessary GUIDs and device names to create bindings for your devices.
-Then read through all the code, and change the button and axis bindings to fit your devices.
-Change the code to fit your preferences.
+Then read through all the code, and change the button and axis bindings.
+Change the code to suit your preferences.
 
 When the plugin is started, it runs some unit tests.
 If a test fails, the plugin will fail to start.
-Read the test results from the `~\Joystick Gremlin Ex\user.log` file.
+Read the test results from the `%USERPROFILE%\Joystick Gremlin Ex\user.log` file.
 
 
-## Configuring the bindings
+## Game bindings
 
 I'm not using [HidHide](https://github.com/nefarius/HidHide).
 That means I can't easily bind virtual buttons that are triggered by a physical button press.
@@ -93,7 +96,7 @@ That means I can't easily bind virtual buttons that are triggered by a physical 
 The toggle button switches can typically be bound in-game by relying on this plugin pressing the vJoy buttons every few seconds when the switch is in the other position.
 For the other key bindings, it's necessary to edit the key bindings file manually.
 
-Edit the bindings file in `\AppData\Local\Frontier Developments\Elite Dangerous\Options\Bindings` to manually bind vJoy buttons and axes. Below are some examples.
+Edit the bindings file in `%USERPROFILE%\AppData\Local\Frontier Developments\Elite Dangerous\Options\Bindings` to manually bind vJoy buttons and axes. Below are some examples.
 
 vJoy device 1, button 1 as secondary action:
 
