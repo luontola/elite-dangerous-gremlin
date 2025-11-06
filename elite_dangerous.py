@@ -113,20 +113,25 @@ def short_press(button):
     threading.Timer(0.2, release).start()
 
 class ToggleController():
-    def __init__(self, is_synced, output, cooldown_seconds=DEFAULT_COOLDOWN):
+    def __init__(self, is_synced, output, cooldown_seconds=DEFAULT_COOLDOWN, description=None):
         self._is_synced = is_synced
         self._output = output
         self._cooldown_seconds = cooldown_seconds
         self._cooldown_end = None
+        self._description = description
 
     def periodic_sync(self, now = None):
         if self._is_synced():
+            if self._cooldown_end:
+                self.log("aligned, cooldown cancelled")
             self._cooldown_end = None
             return
         now = now or time.time()
         if self._cooldown_end is None:
+            self.log(f"deviating, {self._cooldown_seconds}s cooldown started")
             self._cooldown_end = now + self._cooldown_seconds
         elif self._cooldown_end < now:
+            self.log(f"auto toggle!")
             self._cooldown_end = None
             short_press(self._output)
 
@@ -134,7 +139,12 @@ class ToggleController():
         self._cooldown_end = None
         if self._is_synced():
             return
+        self.log(f"manual toggle!")
         short_press(self._output)
+
+    def log(self, str):
+        if self._description:
+            log(f"{self._description}: {str}")
 
 class test_ToggleController(unittest.TestCase):
     class FakeButton():
@@ -284,6 +294,7 @@ lights_input = throttle_raw.button(65)
 lights_output = vjoy[1].button(1)
 
 lights = ToggleController(
+    description="lights",
     is_synced=lambda: has_flag(LIGHTS_ON_FLAG) == lights_input.is_pressed,
     output=lights_output,
 )
@@ -299,6 +310,7 @@ night_vision_input = throttle_raw.button(67)
 night_vision_output = vjoy[1].button(2)
 
 night_vision = ToggleController(
+    description="night vision",
     is_synced=lambda: has_flag(NIGHT_VISION_FLAG) == night_vision_input.is_pressed,
     output=night_vision_output,
 )
@@ -314,6 +326,7 @@ landing_gear_input = throttle_raw.button(74)
 landing_gear_output = vjoy[1].button(3)
 
 landing_gear = ToggleController(
+    description="landing gear",
     is_synced=lambda: has_flag(LANDING_GEAR_DOWN_FLAG) == landing_gear_input.is_pressed,
     output=landing_gear_output,
 )
@@ -329,6 +342,7 @@ cargo_scoop_input = throttle_raw.button(76)
 cargo_scoop_output = vjoy[1].button(4)
 
 cargo_scoop = ToggleController(
+    description="cargo scoop",
     is_synced=lambda: has_flag(CARGO_SCOOP_DEPLOYED_FLAG) == cargo_scoop_input.is_pressed,
     output=cargo_scoop_output,
     # the cargo scoop closes temporarily for nearly 5 seconds when launching prospectors or abandoning limpets
@@ -347,6 +361,7 @@ hardpoints_input = throttle_raw.button(93)
 hardpoints_output = vjoy[1].button(5)
 
 hardpoints = ToggleController(
+    description="hardpoints",
     is_synced=lambda: has_flag(HARDPOINTS_DEPLOYED_FLAG) == hardpoints_input.is_pressed,
     output=hardpoints_output,
 )
