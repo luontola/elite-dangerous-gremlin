@@ -238,8 +238,8 @@ class test_ToggleController(unittest.TestCase):
 
         ctrl.manual_toggle()
 
-        self.assertEqual(ctrl._cooldown_end, None)
         self.assertEqual(self.output.is_pressed, True)
+        self.assertEqual(ctrl._cooldown_end, None)
 
     def test_manual_toggle__when_aligned_and_in_cooldown__only_clears_the_cooldown(self):
         is_aligned = False
@@ -249,8 +249,8 @@ class test_ToggleController(unittest.TestCase):
         is_aligned = True
         ctrl.manual_toggle()
 
-        self.assertEqual(ctrl._cooldown_end, None)
         self.assertEqual(self.output.is_pressed, None)
+        self.assertEqual(ctrl._cooldown_end, None)
 
 
 
