@@ -64,9 +64,25 @@ That means the switch may sometimes be out of sync with the game state, but movi
 
 ### Auto fire for laser mining
 
-Holding down the trigger for long times is tiring (especially since my flight stick has a heavy trigger).
+Holding down the trigger for a long time is tiring (especially since my flight stick has a heavy trigger).
 To make laser mining more relaxing, I use a toggle switch as an alternative key binding for the primary fire.
 But as a safety measure, that switch works only in analysis mode.
+
+
+## Getting started
+
+These files are provided as-is, without any support or guarantee.
+You should first familiarize yourself with [Joystick Gremlin user plugin development](https://whitemagic.github.io/JoystickGremlin/user_plugins/).
+Or ask ChatGPT.
+
+To set up your devices, choose `Tools > Device Information > Generate plugin script header` in GremlinEx and paste the resulting text from your clipboard.
+That will give you the necessary GUIDs and device names to create bindings for your devices.
+Then read through all the code, and change the button and axis bindings to fit your devices.
+Change the code to fit your preferences.
+
+When the plugin is started, it runs some unit tests.
+If a test fails, the plugin will fail to start.
+Read the test results from the `~\Joystick Gremlin Ex\user.log` file.
 
 
 ## Configuring the bindings
