@@ -124,7 +124,7 @@ class ToggleController():
         if self._is_aligned():
             if self._cooldown_end:
                 self.log("aligned, cooldown cancelled")
-            self._cooldown_end = None
+                self._cooldown_end = None
             return
         now = now or time.time()
         if self._cooldown_end is None:
