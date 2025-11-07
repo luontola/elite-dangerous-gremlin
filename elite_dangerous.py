@@ -121,12 +121,13 @@ class ToggleController():
         self._description = description
 
     def periodic_sync(self, now = None):
+        now = now or time.time()
         if self._is_aligned():
             if self._cooldown_end:
-                self.log("aligned, cooldown cancelled")
+                remaining = max(0, self._cooldown_end - now)
+                self.log(f"aligned, cooldown cancelled ({remaining:.1f}s left)")
                 self._cooldown_end = None
             return
-        now = now or time.time()
         if self._cooldown_end is None:
             self.log(f"deviating, {self._cooldown_seconds}s cooldown started")
             self._cooldown_end = now + self._cooldown_seconds
