@@ -137,7 +137,9 @@ class ToggleController():
             short_press(self._output)
 
     def manual_toggle(self):
-        self._cooldown_end = None
+        if self._cooldown_end:
+            self.log(f"cooldown interrupted")
+            self._cooldown_end = None
         if self._is_aligned():
             return
         self.log("manual toggle!")
