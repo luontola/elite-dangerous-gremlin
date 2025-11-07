@@ -131,7 +131,7 @@ class ToggleController():
             self.log(f"deviating, {self._cooldown_seconds}s cooldown started")
             self._cooldown_end = now + self._cooldown_seconds
         elif self._cooldown_end < now:
-            self.log(f"auto toggle!")
+            self.log("auto toggle!")
             self._cooldown_end = None
             short_press(self._output)
 
@@ -139,7 +139,7 @@ class ToggleController():
         self._cooldown_end = None
         if self._is_aligned():
             return
-        self.log(f"manual toggle!")
+        self.log("manual toggle!")
         short_press(self._output)
 
     def log(self, str):
@@ -253,7 +253,6 @@ class test_ToggleController(unittest.TestCase):
         self.assertEqual(ctrl._cooldown_end, None)
 
 
-
 # Main
 
 @gremlin.input_devices.gremlin_start()
@@ -352,7 +351,6 @@ cargo_scoop = ToggleController(
 @on_button(cargo_scoop_input)
 def on_cargo_scoop(event):
     cargo_scoop.manual_toggle()
-
 
 
 # Hardpoints
