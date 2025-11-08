@@ -28,7 +28,8 @@ Though the game has a hold mode for the cargo scoop binding, I find it fails whe
 Toggle mode together with this plugin is more reliable.
 
 <sup>[2]</sup>
-The game closes the cargo scoop temporarily when launching limpets, so this plugin has a longer sync delay for cargo scoop than the others.
+The game closes the cargo scoop temporarily when launching limpets or abandoning cargo.
+To account for that, the sync delay for cargo scoop is longer than the others.
 That should avoid some voice announcement spam during mining.
 
 

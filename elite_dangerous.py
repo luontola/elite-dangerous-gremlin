@@ -347,8 +347,10 @@ cargo_scoop = ToggleController(
     description="cargo scoop",
     is_aligned=lambda: has_flag(CARGO_SCOOP_DEPLOYED_FLAG) == cargo_scoop_input.is_pressed,
     output=cargo_scoop_output,
-    # the cargo scoop closes temporarily for nearly 5 seconds when launching prospectors or abandoning limpets
-    cooldown_seconds=5,
+    # The cargo scoop closes temporarily during some actions:
+    # Launching prospector limps takes slightly under 5 seconds.
+    # Abandoning 10 limpets takes under 8 seconds, 15 limpets takes over 8 seconds.
+    cooldown_seconds=8,
 )
 
 @on_button(cargo_scoop_input)
