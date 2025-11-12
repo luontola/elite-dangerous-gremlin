@@ -119,9 +119,11 @@ class ToggleController():
         self._cooldown_seconds = cooldown_seconds
         self._cooldown_end = None
         self._description = description
+        self._last_periodic_sync = time.time()
 
     def periodic_sync(self, now = None):
         now = now or time.time()
+        self._last_periodic_sync = now
         if self._is_aligned():
             if self._cooldown_end:
                 remaining = max(0, self._cooldown_end - now)
@@ -137,6 +139,10 @@ class ToggleController():
             short_press(self._output)
 
     def manual_toggle(self):
+        now = time.time()
+        if self._last_periodic_sync + 10 < now:
+            tts = gremlin.tts.TextToSpeech()
+            tts.speak(f"Gremlin plugin failed {now - self._last_periodic_sync:.0f} seconds ago, please restart")
         if self._cooldown_end:
             self.log(f"cooldown interrupted")
             self._cooldown_end = None
@@ -288,6 +294,11 @@ def refresh_status():
         # For example the file may be empty, so parsing the JSON fails.
         # If the exception is not caught, gremlin stops the periodic calls.
         log(f"refresh_status failed:\n{traceback.format_exc()}")
+    except BaseException as e:
+        log("A critical error occurred")
+        log(str(e))
+        log(traceback.format_exc())
+        raise
 
 
 # Ship lights
