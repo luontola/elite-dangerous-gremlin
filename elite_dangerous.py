@@ -122,6 +122,10 @@ class ToggleController():
         self._last_periodic_sync = time.time()
 
     def periodic_sync(self, now = None):
+        # TODO: rename _cooldown_end to _debounce_end
+        # TODO: rename logging: deviating, wait 1.1s before toggling
+        # TODO: rename logging: aligned, wait cancelled (0.6s left)
+        # TODO: rename logging: wait interrupted by user action
         now = now or time.time()
         self._last_periodic_sync = now
         if self._is_aligned():
