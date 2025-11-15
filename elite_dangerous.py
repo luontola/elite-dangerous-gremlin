@@ -262,18 +262,40 @@ class test_ToggleController(unittest.TestCase):
         self.assertEqual(ctrl._cooldown_end, None)
 
 
+poller = None
+
+def start_polling():
+    global poller
+    poller = True
+    poll()
+
+def stop_polling():
+    global poller
+    if poller:
+        poller.cancel()
+        poller = None
+
+def poll():
+    refresh_status()
+    global poller
+    if poller:
+        poller = threading.Timer(REFRESH_INTERVAL, poll)
+        poller.start()
+
+
 # Main
 
 @gremlin.input_devices.gremlin_start()
 def on_profile_start():
     log("on_profile_start")
     adjust_throttle()
+    start_polling()
 
 @gremlin.input_devices.gremlin_stop()
 def on_profile_stop():
     log("on_profile_stop")
+    stop_polling()
 
-@gremlin.input_devices.periodic(0.5)
 def refresh_status():
     try:
         with open(status_path) as f:
@@ -289,16 +311,11 @@ def refresh_status():
         cargo_scoop.periodic_sync()
         hardpoints.periodic_sync()
         sync_auto_miner()
-    except Exception as e:
+    except:
         # Reading the file may fail if we read it at a bad time.
         # For example the file may be empty, so parsing the JSON fails.
         # If the exception is not caught, gremlin stops the periodic calls.
         log(f"refresh_status failed:\n{traceback.format_exc()}")
-    except BaseException as e:
-        log("A critical error occurred")
-        log(str(e))
-        log(traceback.format_exc())
-        raise
 
 
 # Ship lights
