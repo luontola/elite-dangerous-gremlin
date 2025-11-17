@@ -395,14 +395,20 @@ def on_cargo_scoop(event):
     cargo_scoop.manual_toggle()
 
 
-# Hardpoints
+# Hardpoints / SRV turret view
 
 hardpoints_input = throttle_raw.button(93)
 hardpoints_output = vjoy[1].button(5)
 
+def is_hardpoints_aligned():
+    if has_flag(IN_SRV_FLAG):
+        return has_flag(SRV_TURRET_VIEW_FLAG) == hardpoints_input.is_pressed
+    else:
+        return has_flag(HARDPOINTS_DEPLOYED_FLAG) == hardpoints_input.is_pressed
+
 hardpoints = ToggleController(
     description="hardpoints",
-    is_aligned=lambda: has_flag(HARDPOINTS_DEPLOYED_FLAG) == hardpoints_input.is_pressed,
+    is_aligned=is_hardpoints_aligned,
     output=hardpoints_output,
 )
 

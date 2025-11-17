@@ -794,7 +794,7 @@
 		<Secondary Device="{NoDevice}" Key="" />
 	</HeadlightsBuggyButton>
 	<ToggleBuggyTurretButton>
-		<Primary Device="4098BE41" Key="Joy_11" />
+		<Primary Device="vJoy" DeviceIndex="1" Key="Joy_5" />
 		<Secondary Device="{NoDevice}" Key="" />
 	</ToggleBuggyTurretButton>
 	<BuggyCycleFireGroupNext>
@@ -816,7 +816,7 @@
 	<BuggyTurretYawAxisRaw>
 		<Binding Device="4098BE41" Key="Joy_XAxis" />
 		<Inverted Value="0" />
-		<Deadzone Value="0.00000000" />
+		<Deadzone Value="0.03750000" />
 	</BuggyTurretYawAxisRaw>
 	<BuggyTurretYawLeftButton>
 		<Primary Device="{NoDevice}" Key="" />
@@ -829,7 +829,7 @@
 	<BuggyTurretPitchAxisRaw>
 		<Binding Device="4098BE41" Key="Joy_YAxis" />
 		<Inverted Value="0" />
-		<Deadzone Value="0.00000000" />
+		<Deadzone Value="0.02250000" />
 	</BuggyTurretPitchAxisRaw>
 	<BuggyTurretPitchUpButton>
 		<Primary Device="{NoDevice}" Key="" />
