@@ -262,60 +262,69 @@ class test_ToggleController(unittest.TestCase):
         self.assertEqual(ctrl._debounce_end, None)
 
 
-poller = None
+class Poller():
+    def __init__(self, callback, interval_seconds):
+        self._callback = callback
+        self._interval_seconds = interval_seconds
+        self._timer = None
+        self._running = False
 
-def start_polling():
-    global poller
-    poller = True
-    poll()
+    def start(self):
+        self._running = True
+        self._poll()
 
-def stop_polling():
-    global poller
-    if poller:
-        poller.cancel()
-        poller = None
+    def stop(self):
+        self._running = False
+        if self._timer:
+            self._timer.cancel()
+            self._timer = None
 
-def poll():
-    refresh_status()
-    global poller
-    if poller:
-        poller = threading.Timer(REFRESH_INTERVAL, poll)
-        poller.start()
+    def _poll(self):
+        try:
+            self._callback()
+        except:
+            log(f"Poller callback failed:\n{traceback.format_exc()}")
+        if self._running:
+            self._timer = threading.Timer(self._interval_seconds, self._poll)
+            self._timer.start()
 
 
 # Main
-
-@gremlin.input_devices.gremlin_start()
-def on_profile_start():
-    log("on_profile_start")
-    adjust_throttle()
-    start_polling()
-
-@gremlin.input_devices.gremlin_stop()
-def on_profile_stop():
-    log("on_profile_stop")
-    stop_polling()
 
 def refresh_status():
     try:
         with open(status_path) as f:
             data = json.load(f)
-        global flags
-        flags = data.get('Flags', 0)
-        global gui_focus
-        gui_focus = data.get('GuiFocus', 0)
-
-        lights.periodic_sync()
-        night_vision.periodic_sync()
-        landing_gear.periodic_sync()
-        cargo_scoop.periodic_sync()
-        hardpoints.periodic_sync()
-        sync_auto_miner()
-    except:
+    except Exception as e:
         # Reading the file may fail if we read it at a bad time.
         # For example the file may be empty, so parsing the JSON fails.
-        # If the exception is not caught, gremlin stops the periodic calls.
-        log(f"refresh_status failed:\n{traceback.format_exc()}")
+        log(f"refresh_status: failed to read status file: {e}")
+        return
+
+    global flags
+    flags = data.get('Flags', 0)
+    global gui_focus
+    gui_focus = data.get('GuiFocus', 0)
+
+    lights.periodic_sync()
+    night_vision.periodic_sync()
+    landing_gear.periodic_sync()
+    cargo_scoop.periodic_sync()
+    hardpoints.periodic_sync()
+    sync_auto_miner()
+
+poller = Poller(refresh_status, REFRESH_INTERVAL)
+
+@gremlin.input_devices.gremlin_start()
+def on_profile_start():
+    log("on_profile_start")
+    adjust_throttle()
+    poller.start()
+
+@gremlin.input_devices.gremlin_stop()
+def on_profile_stop():
+    log("on_profile_stop")
+    poller.stop()
 
 
 # Ship lights
