@@ -101,10 +101,10 @@ GUI_CODEX = 11
 def has_flag(flag):
     return (flags & flag) == flag
 
-# The default cooldown is a bit over twice as long as the refresh_status interval.
+# The default debounce is a bit over twice as long as the refresh_status interval.
 # This will cause the toggle to be retried on every third refresh.
 REFRESH_INTERVAL = 0.5
-DEFAULT_COOLDOWN = 1.1
+DEFAULT_DEBOUNCE = 1.1
 
 def short_press(button):
     button.is_pressed = True
@@ -113,33 +113,29 @@ def short_press(button):
     threading.Timer(0.2, release).start()
 
 class ToggleController():
-    def __init__(self, is_aligned, output, cooldown_seconds=DEFAULT_COOLDOWN, description=None):
+    def __init__(self, is_aligned, output, debounce_seconds=DEFAULT_DEBOUNCE, description=None):
         self._is_aligned = is_aligned
         self._output = output
-        self._cooldown_seconds = cooldown_seconds
-        self._cooldown_end = None
+        self._debounce_seconds = debounce_seconds
+        self._debounce_end = None
         self._description = description
         self._last_periodic_sync = time.time()
 
     def periodic_sync(self, now = None):
-        # TODO: rename _cooldown_end to _debounce_end
-        # TODO: rename logging: deviating, wait 1.1s before toggling
-        # TODO: rename logging: aligned, wait cancelled (0.6s left)
-        # TODO: rename logging: wait interrupted by user action
         now = now or time.time()
         self._last_periodic_sync = now
         if self._is_aligned():
-            if self._cooldown_end:
-                remaining = max(0, self._cooldown_end - now)
-                self.log(f"aligned, cooldown cancelled ({remaining:.1f}s left)")
-                self._cooldown_end = None
+            if self._debounce_end:
+                remaining = max(0, self._debounce_end - now)
+                self.log(f"aligned, wait cancelled ({remaining:.1f}s left)")
+                self._debounce_end = None
             return
-        if self._cooldown_end is None:
-            self.log(f"deviating, {self._cooldown_seconds}s cooldown started")
-            self._cooldown_end = now + self._cooldown_seconds
-        elif self._cooldown_end < now:
+        if self._debounce_end is None:
+            self.log(f"deviating, wait {self._debounce_seconds}s before toggling")
+            self._debounce_end = now + self._debounce_seconds
+        elif self._debounce_end < now:
             self.log("auto toggle!")
-            self._cooldown_end = None
+            self._debounce_end = None
             short_press(self._output)
 
     def manual_toggle(self):
@@ -147,9 +143,9 @@ class ToggleController():
         if self._last_periodic_sync + 10 < now:
             tts = gremlin.tts.TextToSpeech()
             tts.speak(f"Gremlin plugin failed {now - self._last_periodic_sync:.0f} seconds ago, please restart")
-        if self._cooldown_end:
-            self.log(f"cooldown interrupted")
-            self._cooldown_end = None
+        if self._debounce_end:
+            self.log(f"wait interrupted by user action")
+            self._debounce_end = None
         if self._is_aligned():
             return
         self.log("manual toggle!")
@@ -170,25 +166,25 @@ class test_ToggleController(unittest.TestCase):
         self.deviating = lambda: False
 
     def test_periodic_sync__when_aligned__does_nothing(self):
-        ctrl = ToggleController(self.aligned, self.output, cooldown_seconds=4)
+        ctrl = ToggleController(self.aligned, self.output, debounce_seconds=4)
         now = 1000
-        
+
         ctrl.periodic_sync(now)
 
         self.assertEqual(self.output.is_pressed, None)
-        self.assertEqual(ctrl._cooldown_end, None)
+        self.assertEqual(ctrl._debounce_end, None)
 
-    def test_periodic_sync__when_deviating__starts_a_cooldown(self):
-        ctrl = ToggleController(self.deviating, self.output, cooldown_seconds=4)
+    def test_periodic_sync__when_deviating__starts_a_debounce(self):
+        ctrl = ToggleController(self.deviating, self.output, debounce_seconds=4)
         now = 1000
-        
+
         ctrl.periodic_sync(now)
 
         self.assertEqual(self.output.is_pressed, None)
-        self.assertEqual(ctrl._cooldown_end, 1004)
+        self.assertEqual(ctrl._debounce_end, 1004)
 
-    def test_periodic_sync__when_deviating_and_in_cooldown__does_nothing(self):
-        ctrl = ToggleController(self.deviating, self.output, cooldown_seconds=4)
+    def test_periodic_sync__when_deviating_and_debouncing__does_nothing(self):
+        ctrl = ToggleController(self.deviating, self.output, debounce_seconds=4)
         now = 1000
         ctrl.periodic_sync(now)
 
@@ -196,10 +192,10 @@ class test_ToggleController(unittest.TestCase):
         ctrl.periodic_sync(now)
 
         self.assertEqual(self.output.is_pressed, None)
-        self.assertEqual(ctrl._cooldown_end, 1004)
+        self.assertEqual(ctrl._debounce_end, 1004)
 
-    def test_periodic_sync__when_deviating_and_after_cooldown__presses_the_button_and_clears_the_cooldown(self):
-        ctrl = ToggleController(self.deviating, self.output, cooldown_seconds=4)
+    def test_periodic_sync__when_deviating_and_after_debounce__presses_the_button_and_clears_the_debounce(self):
+        ctrl = ToggleController(self.deviating, self.output, debounce_seconds=4)
         now = 1000
         ctrl.periodic_sync(now)
 
@@ -207,11 +203,11 @@ class test_ToggleController(unittest.TestCase):
         ctrl.periodic_sync(now)
 
         self.assertEqual(self.output.is_pressed, True)
-        self.assertEqual(ctrl._cooldown_end, None)
+        self.assertEqual(ctrl._debounce_end, None)
 
-    def test_periodic_sync__when_aligned_and_in_cooldown__only_clears_the_cooldown(self):
+    def test_periodic_sync__when_aligned_and_debouncing__only_clears_the_debounce(self):
         is_aligned = False
-        ctrl = ToggleController(lambda: is_aligned, self.output, cooldown_seconds=4)
+        ctrl = ToggleController(lambda: is_aligned, self.output, debounce_seconds=4)
         now = 1000
         ctrl.periodic_sync(now)
 
@@ -219,17 +215,17 @@ class test_ToggleController(unittest.TestCase):
         ctrl.periodic_sync(now)
 
         self.assertEqual(self.output.is_pressed, None)
-        self.assertEqual(ctrl._cooldown_end, None)
+        self.assertEqual(ctrl._debounce_end, None)
 
-    def test_the_cooldown_uses_the_current_time_and_a_default_delay(self):
+    def test_the_debounce_uses_the_current_time_and_a_default_delay(self):
         ctrl = ToggleController(self.deviating, self.output)
 
         t1 = time.time()
         ctrl.periodic_sync()
         t2 = time.time()
 
-        self.assertGreaterEqual(ctrl._cooldown_end, t1 + DEFAULT_COOLDOWN)
-        self.assertLessEqual(ctrl._cooldown_end, t2 + DEFAULT_COOLDOWN)
+        self.assertGreaterEqual(ctrl._debounce_end, t1 + DEFAULT_DEBOUNCE)
+        self.assertLessEqual(ctrl._debounce_end, t2 + DEFAULT_DEBOUNCE)
 
     def test_manual_toggle__when_aligned__does_nothing(self):
         ctrl = ToggleController(self.aligned, self.output)
@@ -245,16 +241,16 @@ class test_ToggleController(unittest.TestCase):
 
         self.assertEqual(self.output.is_pressed, True)
 
-    def test_manual_toggle__when_deviating_and_in_cooldown__presses_the_button_and_clears_the_cooldown(self):
+    def test_manual_toggle__when_deviating_and_debouncing__presses_the_button_and_clears_the_debounce(self):
         ctrl = ToggleController(self.deviating, self.output)
         ctrl.periodic_sync()
 
         ctrl.manual_toggle()
 
         self.assertEqual(self.output.is_pressed, True)
-        self.assertEqual(ctrl._cooldown_end, None)
+        self.assertEqual(ctrl._debounce_end, None)
 
-    def test_manual_toggle__when_aligned_and_in_cooldown__only_clears_the_cooldown(self):
+    def test_manual_toggle__when_aligned_and_debouncing__only_clears_the_debounce(self):
         is_aligned = False
         ctrl = ToggleController(lambda: is_aligned, self.output)
         ctrl.periodic_sync()
@@ -263,7 +259,7 @@ class test_ToggleController(unittest.TestCase):
         ctrl.manual_toggle()
 
         self.assertEqual(self.output.is_pressed, None)
-        self.assertEqual(ctrl._cooldown_end, None)
+        self.assertEqual(ctrl._debounce_end, None)
 
 
 poller = None
@@ -382,7 +378,7 @@ cargo_scoop = ToggleController(
     # The cargo scoop closes temporarily during some actions:
     # Launching prospector limps takes slightly under 5 seconds.
     # Abandoning 10 limpets takes under 8 seconds, 15 limpets takes over 8 seconds.
-    cooldown_seconds=8,
+    debounce_seconds=8,
 )
 
 @on_button(cargo_scoop_input)
