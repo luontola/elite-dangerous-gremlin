@@ -453,6 +453,7 @@ def on_system_map(event):
 
 right_throttle_input = throttle_raw.axis(4)
 left_pedal_input = pedals_raw.axis(1)
+right_pedal_input = pedals_raw.axis(2)
 travel_mode_input = throttle_raw.button(95)
 throttle_output = vjoy[1].axis(AxisName.RX)
 
@@ -464,15 +465,23 @@ def on_right_throttle(event):
 def on_left_pedal(event):
     adjust_throttle()
 
+@on_axis(right_pedal_input)
+def on_right_pedal(event):
+    adjust_throttle()
+
 @on_button(travel_mode_input)
 def on_travel_mode(event):
     adjust_throttle()
 
 def adjust_throttle():
-    forward = right_throttle_input.value * -1
-    backward = left_pedal_input.value
-    if not travel_mode_input.is_pressed:
-        forward = gremlin.input_devices.deadzone(forward, -0.8, 0, 0, 0.5)
+    if has_flag(IN_SRV_FLAG):
+        forward = right_pedal_input.value
+        backward = left_pedal_input.value
+    else:
+        forward = right_throttle_input.value * -1
+        backward = left_pedal_input.value
+        if not travel_mode_input.is_pressed:
+            forward = gremlin.input_devices.deadzone(forward, -0.8, 0, 0, 0.5)
     throttle_output.value = calculate_throttle(forward, backward)
 
 def calculate_throttle(forward, backward):

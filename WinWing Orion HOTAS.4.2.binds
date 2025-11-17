@@ -733,7 +733,7 @@
 	<MouseBuggyYMode Value="" />
 	<MouseBuggyYDecay Value="0" />
 	<SteeringAxis>
-		<Binding Device="068E00F2" Key="Joy_ZAxis" />
+		<Binding Device="4098BE41" Key="Joy_XAxis" />
 		<Inverted Value="0" />
 		<Deadzone Value="0.00000000" />
 	</SteeringAxis>
@@ -772,7 +772,7 @@
 		<Secondary Device="{NoDevice}" Key="" />
 	</BuggyPitchDownButton>
 	<VerticalThrustersButton>
-		<Primary Device="4098BE32" Key="Joy_20" />
+		<Primary Device="4098BE41" Key="Joy_12" />
 		<Secondary Device="{NoDevice}" Key="" />
 		<ToggleOn Value="0" />
 	</VerticalThrustersButton>
@@ -785,7 +785,7 @@
 		<Secondary Device="4098BE41" Key="Joy_10" />
 	</BuggySecondaryFireButton>
 	<AutoBreakBuggyButton>
-		<Primary Device="4098BE32" Key="Joy_18" />
+		<Primary Device="4098BE41" Key="Joy_14" />
 		<Secondary Device="{NoDevice}" Key="" />
 		<ToggleOn Value="0" />
 	</AutoBreakBuggyButton>
@@ -794,7 +794,7 @@
 		<Secondary Device="{NoDevice}" Key="" />
 	</HeadlightsBuggyButton>
 	<ToggleBuggyTurretButton>
-		<Primary Device="4098BE32" Key="Joy_21" />
+		<Primary Device="4098BE41" Key="Joy_11" />
 		<Secondary Device="{NoDevice}" Key="" />
 	</ToggleBuggyTurretButton>
 	<BuggyCycleFireGroupNext>
@@ -927,11 +927,11 @@
 		<Secondary Device="{NoDevice}" Key="" />
 	</FocusRightPanel_Buggy>
 	<GalaxyMapOpen_Buggy>
-		<Primary Device="{NoDevice}" Key="" />
+		<Primary Device="vJoy" DeviceIndex="1" Key="Joy_11" />
 		<Secondary Device="{NoDevice}" Key="" />
 	</GalaxyMapOpen_Buggy>
 	<SystemMapOpen_Buggy>
-		<Primary Device="{NoDevice}" Key="" />
+		<Primary Device="vJoy" DeviceIndex="1" Key="Joy_12" />
 		<Secondary Device="{NoDevice}" Key="" />
 	</SystemMapOpen_Buggy>
 	<OpenCodexGoToDiscovery_Buggy>
@@ -939,7 +939,7 @@
 		<Secondary Device="{NoDevice}" Key="" />
 	</OpenCodexGoToDiscovery_Buggy>
 	<PlayerHUDModeToggle_Buggy>
-		<Primary Device="4098BE32" Key="Joy_93" />
+		<Primary Device="4098BE32" Key="Joy_96" />
 		<Secondary Device="{NoDevice}" Key="" />
 	</PlayerHUDModeToggle_Buggy>
 	<HeadLookToggle_Buggy>
