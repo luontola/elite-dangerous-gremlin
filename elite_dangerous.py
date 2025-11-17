@@ -312,6 +312,7 @@ def refresh_status():
     cargo_scoop.periodic_sync()
     hardpoints.periodic_sync()
     sync_auto_miner()
+    adjust_throttle()
 
 poller = Poller(refresh_status, REFRESH_INTERVAL)
 
