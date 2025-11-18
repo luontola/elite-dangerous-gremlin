@@ -511,7 +511,9 @@
 	<EnableCameraLockOn Value="1" />
 	<GalaxyMapOpen>
 		<Primary Device="vJoy" DeviceIndex="1" Key="Joy_11" />
-		<Secondary Device="{NoDevice}" Key="" />
+		<Secondary Device="Keyboard" Key="Key_G">
+			<Modifier Device="Keyboard" Key="Key_LeftAlt" />
+		</Secondary>
 	</GalaxyMapOpen>
 	<SystemMapOpen>
 		<Primary Device="vJoy" DeviceIndex="1" Key="Joy_12" />
@@ -704,7 +706,9 @@
 		<Deadzone Value="0.00000000" />
 	</CamZoomAxis>
 	<CamZoomIn>
-		<Primary Device="{NoDevice}" Key="" />
+		<Primary Device="Keyboard" Key="Key_Minus">
+			<Modifier Device="Keyboard" Key="Key_LeftAlt" />
+		</Primary>
 		<Secondary Device="{NoDevice}" Key="" />
 	</CamZoomIn>
 	<CamZoomOut>
