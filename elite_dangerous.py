@@ -312,6 +312,7 @@ def refresh_status():
     cargo_scoop.periodic_sync()
     hardpoints.periodic_sync()
     sync_auto_miner()
+    adjust_srv_steering()
     adjust_throttle()
 
 poller = Poller(refresh_status, REFRESH_INTERVAL)
@@ -454,6 +455,27 @@ def on_system_map(event):
     if actual == desired:
         return
     short_press(system_map_output)
+
+
+# SRV Steering
+
+joystick_roll_input = joystick_raw.axis(1)
+pedals_rudder_input = pedals_raw.axis(3)
+srv_steering_output = vjoy[1].axis(AxisName.Z)
+
+@on_axis(joystick_roll_input)
+def on_joystick_steering(event):
+    adjust_srv_steering()
+
+@on_axis(pedals_rudder_input)
+def on_pedals_steering(event):
+    adjust_srv_steering()
+
+def adjust_srv_steering():
+    if has_flag(SRV_TURRET_VIEW_FLAG):
+        srv_steering_output.value = pedals_rudder_input.value
+    else:
+        srv_steering_output.value = joystick_roll_input.value
 
 
 # Throttle
