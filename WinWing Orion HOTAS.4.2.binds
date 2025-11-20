@@ -1335,19 +1335,19 @@
 		<Secondary Device="{NoDevice}" Key="" />
 	</ExplorationFSSCameraYawDecreaseButton>
 	<ExplorationFSSZoomIn>
-		<Primary Device="4098BE32" Key="Pos_Joy_ZAxis" />
+		<Primary Device="4098BE32" Key="Joy_84" />
 		<Secondary Device="{NoDevice}" Key="" />
 	</ExplorationFSSZoomIn>
 	<ExplorationFSSZoomOut>
-		<Primary Device="4098BE32" Key="Neg_Joy_ZAxis" />
+		<Primary Device="4098BE32" Key="Joy_83" />
 		<Secondary Device="{NoDevice}" Key="" />
 	</ExplorationFSSZoomOut>
 	<ExplorationFSSMiniZoomIn>
-		<Primary Device="4098BE32" Key="Joy_84" />
+		<Primary Device="{NoDevice}" Key="" />
 		<Secondary Device="{NoDevice}" Key="" />
 	</ExplorationFSSMiniZoomIn>
 	<ExplorationFSSMiniZoomOut>
-		<Primary Device="4098BE32" Key="Joy_83" />
+		<Primary Device="{NoDevice}" Key="" />
 		<Secondary Device="{NoDevice}" Key="" />
 	</ExplorationFSSMiniZoomOut>
 	<ExplorationFSSRadioTuningX_Raw>
