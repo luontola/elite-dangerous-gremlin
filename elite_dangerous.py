@@ -120,11 +120,9 @@ class ToggleController():
         self._debounce_seconds = debounce_seconds
         self._debounce_end = None
         self._description = description
-        self._last_periodic_sync = time.time()
 
     def periodic_sync(self, now = None):
         now = now or time.time()
-        self._last_periodic_sync = now
         if self._is_aligned():
             if self._debounce_end:
                 remaining = max(0, self._debounce_end - now)
@@ -140,10 +138,6 @@ class ToggleController():
             short_press(self._output)
 
     def manual_toggle(self):
-        now = time.time()
-        if self._last_periodic_sync + 10 < now:
-            tts = gremlin.tts.TextToSpeech()
-            tts.speak(f"Gremlin plugin failed {now - self._last_periodic_sync:.0f} seconds ago, please restart")
         if self._debounce_end:
             self.log(f"wait interrupted by user action")
             self._debounce_end = None
