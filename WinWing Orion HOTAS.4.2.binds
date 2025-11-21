@@ -22,7 +22,7 @@
 	<YawAxisRaw>
 		<Binding Device="068E00F2" Key="Joy_ZAxis" />
 		<Inverted Value="0" />
-		<Deadzone Value="0.00000000" />
+		<Deadzone Value="0.01000000" />
 	</YawAxisRaw>
 	<YawLeftButton>
 		<Primary Device="{NoDevice}" Key="" />
