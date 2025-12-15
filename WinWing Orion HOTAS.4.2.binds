@@ -517,7 +517,7 @@
 	</GalaxyMapOpen>
 	<SystemMapOpen>
 		<Primary Device="vJoy" DeviceIndex="1" Key="Joy_12" />
-		<Secondary Device="{NoDevice}" Key="" />
+		<Secondary Device="4098BE32" Key="Joy_92" />
 	</SystemMapOpen>
 	<ShowPGScoreSummaryInput>
 		<Primary Device="Keyboard" Key="Key_F1" />
