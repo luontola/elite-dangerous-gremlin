@@ -35,13 +35,13 @@ That should avoid some voice announcement spam during mining.
 
 ### Combining two throttle axes into one
 
-I use the throttle handle on my HOTAS for forward thrust, and the left break pedal for backward thrust.
-(The right break pedal is boost.)
+I use the throttle handle on my HOTAS for forward thrust, and my left rudder pedal's toe brake for backward thrust.
+(The right pedal's toe brake is boost.)
 This plugin combines those two axes into a single throttle axis.
 
-Breaking and going reverse doesn't require reducing the forward thrust.
-Regardless of how much forward thrust there is, pressing the break pedal to the bottom will go full reverse.
-The amount of break pedal that is needed to reach a standstill depends linearly on how much forward thrust there is; with full forward thrust you'll need to press the break pedal halfway.
+Braking and reversing doesn't require reducing the forward thrust.
+Regardless of how much forward thrust there is, pressing the brake pedal to the bottom will go full reverse.
+The amount of brake pedal that is needed to reach a standstill depends linearly on how much forward thrust there is; with full forward thrust you'll need to press the brake pedal halfway.
 
 
 ### Travel/combat mode throttle

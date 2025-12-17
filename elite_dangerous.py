@@ -476,8 +476,8 @@ def adjust_srv_steering():
 # Throttle
 
 right_throttle_input = throttle_raw.axis(4)
-left_pedal_input = pedals_raw.axis(1)
-right_pedal_input = pedals_raw.axis(2)
+left_pedal_toe_brake_input = pedals_raw.axis(1)
+right_pedal_toe_brake_input = pedals_raw.axis(2)
 travel_mode_input = throttle_raw.button(95)
 throttle_output = vjoy[1].axis(AxisName.RX)
 
@@ -485,12 +485,12 @@ throttle_output = vjoy[1].axis(AxisName.RX)
 def on_right_throttle(event):
     adjust_throttle()
 
-@on_axis(left_pedal_input)
-def on_left_pedal(event):
+@on_axis(left_pedal_toe_brake_input)
+def on_left_pedal_toe_brake(event):
     adjust_throttle()
 
-@on_axis(right_pedal_input)
-def on_right_pedal(event):
+@on_axis(right_pedal_toe_brake_input)
+def on_right_pedal_toe_brake(event):
     adjust_throttle()
 
 @on_button(travel_mode_input)
@@ -499,12 +499,12 @@ def on_travel_mode(event):
 
 def adjust_throttle():
     if has_flag(IN_SRV_FLAG):
-        forward = right_pedal_input.value
-        backward = left_pedal_input.value
+        forward = right_pedal_toe_brake_input.value
+        backward = left_pedal_toe_brake_input.value
         throttle_output.value = srv_throttle_curve(calculate_throttle(forward, backward))
     else:
         forward = right_throttle_input.value * -1
-        backward = left_pedal_input.value
+        backward = left_pedal_toe_brake_input.value
         if not travel_mode_input.is_pressed:
             forward = gremlin.input_devices.deadzone(forward, -0.8, 0, 0, 0.5)
         throttle_output.value = calculate_throttle(forward, backward)
