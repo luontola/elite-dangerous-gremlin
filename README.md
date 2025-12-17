@@ -19,7 +19,7 @@ The following controls are managed by this mechanism:
 
 - Landing gear
 - Cargo scoop <sup>[1]</sup> <sup>[2]</sup>
-- Hardpoints
+- Hardpoints / SRV turret view
 - Ship lights
 - Night vision
 
@@ -54,6 +54,31 @@ The throttle mode and hardpoints are controlled by a 3-way switch:
 1. Travel mode: full throttle range, hardpoints retracted
 2. Maneuver mode: compressed throttle range, hardpoints retracted
 3. Combat mode: compressed throttle range, hardpoints deployed
+
+
+### SRV mode throttle
+
+In an SRV, the throttle is controlled with pedals like a car.
+The right rudder pedal's toe break is forward, and the left rudder pedal's toe break is backward.
+This feels more natural than using the throttle handle.
+
+The SRV (Scarab) accelerates by default too quickly.
+To make it easier to drive slowly, I apply a curve to the throttle.
+The curve gives more precision at low speeds.
+
+
+### SRV mode steering
+
+I use the joystick for steering the SRV.
+Not quite a car's steering wheel, but quite natural.
+
+But if the SRV turret is deployed, I use the joystick for rotating the turret.
+To enable steering the SRV while the turret is deployed, in that mode I steer the SRV with rudder pedals.
+Like an airplane on the ground.
+Not natural, but works in a pinch.
+
+(I use the joystick also for the SRV's pitch and roll.
+The roll and steering bindings don't conflict because one works only on the ground, and the other in the air.)
 
 
 ### Galaxy and system maps on a 3-way switch
