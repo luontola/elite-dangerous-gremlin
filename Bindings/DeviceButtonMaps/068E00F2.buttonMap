@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Root>
+	<!-- CH Pro Pedals -->
+	<Joy_XAxis>CH Toe Brake Left</Joy_XAxis>
+	<Joy_YAxis>CH Toe Brake Right</Joy_YAxis>
+	<Joy_ZAxis>CH Rudder Pedals</Joy_ZAxis>
+</Root>
