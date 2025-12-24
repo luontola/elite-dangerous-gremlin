@@ -4,7 +4,10 @@ This is a [GremlinEx](https://github.com/muchimi/JoystickGremlinEx) plugin for m
 Feel free to copy and adapt to your needs.
 
 I fly in VR using the WinWing Orion HOTAS and CH Products Pro Pedals.
-[These are my bindings](https://imgur.com/a/elite-dangerous-bindings-winwing-orion-hotas-7iuRdSV) as of writing.
+[These are my bindings](https://imgur.com/a/elite-dangerous-bindings-winwing-orion-hotas-7iuRdSV) as of writing (already slightly out of date).
+
+The `Bindings` directory contains the latest backup of my bindings files and button maps.
+Refer to [Custom Button Labels for Elite Dangerous](https://github.com/EDCD/EliteCustomButtonNames) and [Icons for Elite Dangerous buttonmaps](https://cmdr-nutball.github.io/Elite-Dangerous-buttonmap-Icons/) on creating button maps.
 
 
 ## Features
