@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Root>
+	<!-- WinWing Orion F/A-18 Throttle -->
+	<Joy_XAxis>WWThr Slew [x52x]</Joy_XAxis>
+	<Joy_YAxis>WWThr Slew [x52y]</Joy_YAxis>
+	<Joy_ZAxis>WWThr Radar [x52u]</Joy_ZAxis>
+	<Joy_RYAxis>WWThr Left [x52z]</Joy_RYAxis>
+	<Joy_RXAxis>WWThr Right [x52z]</Joy_RXAxis>
+	<Joy_VAxis>WWThr Dial 1 [x52u]</Joy_VAxis>
+	<Joy_UAxis>WWThr Dial 2 [x52u]</Joy_UAxis>
+	<Joy_1>WWThr Right Off [x52z-]</Joy_1>
+	<Joy_2>WWThr Left Off [x52z-]</Joy_2>
+	<Joy_3>WWThr Pinky Fwd</Joy_3>
+	<Joy_4>WWThr Pinky Center</Joy_4>
+	<Joy_5>WWThr Pinky Back</Joy_5>
+	<Joy_6>WWThr Left Button</Joy_6>
+	<Joy_7>WWThr Right Button</Joy_7>
+	<Joy_8>WWThr Hill [hts4HatSwitch]</Joy_8>
+	<Joy_9>WWThr Hill [x52prop1u]</Joy_9>
+	<Joy_10>WWThr Hill [x52prop1r]</Joy_10>
+	<Joy_11>WWThr Hill [x52prop1d]</Joy_11>
+	<Joy_12>WWThr Hill [x52prop1l]</Joy_12>
+	<Joy_13>WWThr Valley [hts4HatSwitch]</Joy_13>
+	<Joy_14>WWThr Valley [x52prop1u]</Joy_14>
+	<Joy_15>WWThr Valley [x52prop1r]</Joy_15>
+	<Joy_16>WWThr Valley [x52prop1d]</Joy_16>
+	<Joy_17>WWThr Valley [x52prop1l]</Joy_17>
+	<Joy_18>WWThr Speed Brk Fwd</Joy_18>
+	<Joy_19>WWThr Speed Brk Center</Joy_19>
+	<Joy_20>WWThr Speed Brk Back</Joy_20>
+	<Joy_21>WWThr Thumb Button</Joy_21>
+	<Joy_22>WWThr Slew [hts4HatSwitch]</Joy_22>
+	<Joy_26>WWThr Slew [x52prop1u]</Joy_26>
+	<Joy_27>WWThr Slew [x52prop1r]</Joy_27>
+	<Joy_28>WWThr Slew [x52prop1d]</Joy_28>
+	<Joy_29>WWThr Slew [x52prop1l]</Joy_29>
+	<Joy_30>WWThr Right On [x52z+]</Joy_30>
+	<Joy_31>WWThr Left On [x52z+]</Joy_31>
+	<Joy_65>WWThr Launch Bar Up</Joy_65>
+	<Joy_66>WWThr Launch Bar Down</Joy_66>
+	<Joy_67>WWThr Hook Up</Joy_67>
+	<Joy_68>WWThr Hook Down</Joy_68>
+	<Joy_69>WWThr Wing Fold</Joy_69>
+	<Joy_70>WWThr Wing Hold</Joy_70>
+	<Joy_71>WWThr Wing Spread</Joy_71>
+	<Joy_72>WWThr Wing Push</Joy_72>
+	<Joy_73>WWThr Ldg Gear Up</Joy_73>
+	<Joy_74>WWThr Ldg Gear Down</Joy_74>
+	<Joy_75>WWThr Park Brk Up</Joy_75>
+	<Joy_76>WWThr Park Brk Down</Joy_76>
+	<Joy_77>WWThr Flaps Up</Joy_77>
+	<Joy_78>WWThr Flaps Center</Joy_78>
+	<Joy_79>WWThr Flaps Down</Joy_79>
+	<Joy_80>WWThr Red 1</Joy_80>
+	<Joy_81>WWThr A/G (Left)</Joy_81>
+	<Joy_82>WWThr A/A (Right)</Joy_82>
+	<Joy_83>WWThr HMD [x52prorx-]</Joy_83>
+	<Joy_84>WWThr HMD [x52prorx+]</Joy_84>
+	<Joy_85>WWThr HMD Push</Joy_85>
+	<Joy_86>WWThr ATT Up</Joy_86>
+	<Joy_87>WWThr ATT Center</Joy_87>
+	<Joy_88>WWThr ATT Down</Joy_88>
+	<Joy_89>WWThr ALT Up</Joy_89>
+	<Joy_90>WWThr ALT Center</Joy_90>
+	<Joy_91>WWThr ALT Down</Joy_91>
+	<Joy_92>WWThr Red 2</Joy_92>
+	<Joy_93>WWThr Master Up</Joy_93>
+	<Joy_94>WWThr Master Center</Joy_94>
+	<Joy_95>WWThr Master Down</Joy_95>
+	<Joy_96>WWThr Jettison</Joy_96>
+	<Joy_97>WWThr HDG [x52prorx-]</Joy_97>
+	<Joy_98>WWThr HDG [x52prorx+]</Joy_98>
+	<Joy_99>WWThr HDG Push</Joy_99>
+	<Joy_100>WWThr CRS [x52prorx-]</Joy_100>
+	<Joy_101>WWThr CRS [x52prorx+]</Joy_101>
+	<Joy_102>WWThr CRS Push</Joy_102>
+	<Joy_103>WWThr LTS [x52prorx-]</Joy_103>
+	<Joy_104>WWThr LTS [x52prorx+]</Joy_104>
+	<Joy_105>WWThr LTS Push</Joy_105>
+	<Joy_106>WWThr Dial 1 Up</Joy_106>
+	<Joy_107>WWThr Dial 1 Center</Joy_107>
+	<Joy_108>WWThr Dial 1 Down</Joy_108>
+	<Joy_109>WWThr Dial 2 Up</Joy_109>
+	<Joy_110>WWThr Dial 2 Center</Joy_110>
+	<Joy_111>WWThr Dial 2 Down</Joy_111>
+</Root>
