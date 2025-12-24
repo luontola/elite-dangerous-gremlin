@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Root>
+	<!-- vJoy -->
+	<Joy_XAxis>vJoy X-Axis</Joy_XAxis>
+	<Joy_YAxis>vJoy Y-Axis</Joy_YAxis>
+	<Joy_ZAxis>vJoy Z-Axis</Joy_ZAxis>
+	<Joy_RXAxis>vJoy RX-Axis</Joy_RXAxis>
+	<Joy_RYAxis>vJoy RY-Axis</Joy_RYAxis>
+	<Joy_RZAxis>vJoy RZ-Axis</Joy_RZAxis>
+	<Joy_1>vJoy 1</Joy_1>
+	<Joy_2>vJoy 2</Joy_2>
+	<Joy_3>vJoy 3</Joy_3>
+	<Joy_4>vJoy 4</Joy_4>
+	<Joy_5>vJoy 5</Joy_5>
+	<Joy_6>vJoy 6</Joy_6>
+	<Joy_7>vJoy 7</Joy_7>
+	<Joy_8>vJoy 8</Joy_8>
+	<Joy_9>vJoy 9</Joy_9>
+	<Joy_10>vJoy 10</Joy_10>
+	<Joy_11>vJoy 11</Joy_11>
+	<Joy_12>vJoy 12</Joy_12>
+	<Joy_13>vJoy 13</Joy_13>
+	<Joy_14>vJoy 14</Joy_14>
+	<Joy_15>vJoy 15</Joy_15>
+	<Joy_16>vJoy 16</Joy_16>
+	<Joy_17>vJoy 17</Joy_17>
+	<Joy_18>vJoy 18</Joy_18>
+	<Joy_19>vJoy 19</Joy_19>
+	<Joy_20>vJoy 20</Joy_20>
+	<Joy_21>vJoy 21</Joy_21>
+	<Joy_22>vJoy 22</Joy_22>
+	<Joy_23>vJoy 23</Joy_23>
+	<Joy_24>vJoy 24</Joy_24>
+	<Joy_25>vJoy 25</Joy_25>
+	<Joy_26>vJoy 26</Joy_26>
+	<Joy_27>vJoy 27</Joy_27>
+	<Joy_28>vJoy 28</Joy_28>
+	<Joy_29>vJoy 29</Joy_29>
+	<Joy_30>vJoy 30</Joy_30>
+	<Joy_31>vJoy 31</Joy_31>
+	<Joy_32>vJoy 32</Joy_32>
+</Root>
