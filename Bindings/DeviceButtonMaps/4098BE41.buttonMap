@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Root>
+	<!-- WinWing Orion F/A-18 Joystick -->
+	<Joy_XAxis>WWJoy [x52x]</Joy_XAxis>
+	<Joy_YAxis>WWJoy [x52y]</Joy_YAxis>
+	<Joy_1>WWJoy China [hts4HatSwitch]</Joy_1>
+	<Joy_POV1Up>WWJoy China [x52prop1u]</Joy_POV1Up>
+	<Joy_POV1Right>WWJoy China [x52prop1r]</Joy_POV1Right>
+	<Joy_POV1Down>WWJoy China [x52prop1d]</Joy_POV1Down>
+	<Joy_POV1Left>WWJoy China [x52prop1l]</Joy_POV1Left>
+	<Joy_2>WWJoy Castle [hts4HatSwitch]</Joy_2>
+	<Joy_3>WWJoy Castle [x52prop1u]</Joy_3>
+	<Joy_4>WWJoy Castle [x52prop1r]</Joy_4>
+	<Joy_5>WWJoy Castle [x52prop1d]</Joy_5>
+	<Joy_6>WWJoy Castle [x52prop1l]</Joy_6>
+	<Joy_7>WWJoy Pickle</Joy_7>
+	<Joy_8>WWJoy Nub [hts4HatSwitch]</Joy_8>
+	<Joy_9>WWJoy Trigger 1</Joy_9>
+	<Joy_10>WWJoy Trigger 2</Joy_10>
+	<Joy_11>WWJoy CMS [hts4HatSwitch]</Joy_11>
+	<Joy_12>WWJoy CMS [x52prop1u]</Joy_12>
+	<Joy_13>WWJoy CMS [x52prop1r]</Joy_13>
+	<Joy_14>WWJoy CMS [x52prop1d]</Joy_14>
+	<Joy_15>WWJoy CMS [x52prop1l]</Joy_15>
+	<Joy_16>WWJoy NWS Pinky</Joy_16>
+	<Joy_17>WWJoy NWS Paddle</Joy_17>
+	<Joy_18>WWJoy Nub [x52prop1u]</Joy_18>
+	<Joy_19>WWJoy Nub [x52prop1r]</Joy_19>
+	<Joy_20>WWJoy Nub [x52prop1d]</Joy_20>
+	<Joy_21>WWJoy Nub [x52prop1l]</Joy_21>
+</Root>
