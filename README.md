@@ -2,6 +2,7 @@
 
 This is a [GremlinEx](https://github.com/muchimi/JoystickGremlinEx) plugin for my HOTAS setup in [Elite Dangerous](https://www.elitedangerous.com/).
 Feel free to copy and adapt to your needs.
+Elite's key bindings are such a personal thing, that I expect everybody to customize this plugin, even if they happen to use the same HOTAS.
 
 I fly in VR using the WinWing Orion HOTAS and CH Products Pro Pedals.
 [These are my bindings](https://imgur.com/a/elite-dangerous-bindings-winwing-orion-hotas-7iuRdSV) as of writing (already slightly out of date).
