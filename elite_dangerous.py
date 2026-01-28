@@ -1,5 +1,5 @@
 import gremlin
-from gremlin.util import parse_guid, log
+from gremlin.util import parse_guid, log, display_error
 from gremlin.spline import CubicSpline
 from vjoy.vjoy import AxisName
 import io
@@ -41,12 +41,24 @@ def on_button(input, mode=DEFAULT_MODE):
 def on_axis(input, mode=DEFAULT_MODE):
     return gremlin.input_devices._axis(axis_id=input._index, device_guid=input._joystick_guid, mode=mode)
 
+def get_device_by_guid(joy, device_name, device_guid):
+    device = joy[parse_guid(device_guid)]
+    if device is None:
+        display_error(
+            f"Input device not found!\n\n"
+            f"Device: {device_name}\n"
+            f"GUID: {device_guid}\n\n"
+            f"Please ensure the device is connected."
+        )
+        raise RuntimeError(f"Input device not found: {device_name}")
+    return device
+
 # device access
 vjoy = gremlin.joystick_handling.VJoyProxy()
 joy = gremlin.input_devices.JoystickProxy()
-joystick_raw = joy[parse_guid(JOYSTICK_GUID)]
-throttle_raw = joy[parse_guid(THROTTLE_GUID)]
-pedals_raw = joy[parse_guid(PEDALS_GUID)]
+joystick_raw = get_device_by_guid(joy, JOYSTICK_NAME, JOYSTICK_GUID)
+throttle_raw = get_device_by_guid(joy, THROTTLE_NAME, THROTTLE_GUID)
+pedals_raw = get_device_by_guid(joy, PEDALS_NAME, PEDALS_GUID)
 
 # reading game status
 status_path = os.path.expanduser(R"~\Saved Games\Frontier Developments\Elite Dangerous\Status.json")
