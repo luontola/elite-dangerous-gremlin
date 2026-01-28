@@ -916,7 +916,7 @@
 	</FocusLeftPanel_Buggy>
 	<FocusCommsPanel_Buggy>
 		<Primary Device="Keyboard" Key="Key_2" />
-		<Secondary Device="4098BE32" Key="Joy_7" />
+		<Secondary Device="4098BE32" Key="Joy_6" />
 	</FocusCommsPanel_Buggy>
 	<QuickCommsPanel_Buggy>
 		<Primary Device="Keyboard" Key="Key_Enter" />
@@ -936,7 +936,7 @@
 	</GalaxyMapOpen_Buggy>
 	<SystemMapOpen_Buggy>
 		<Primary Device="vJoy" DeviceIndex="1" Key="Joy_12" />
-		<Secondary Device="{NoDevice}" Key="" />
+		<Secondary Device="4098BE32" Key="Joy_92" />
 	</SystemMapOpen_Buggy>
 	<OpenCodexGoToDiscovery_Buggy>
 		<Primary Device="Keyboard" Key="Key_O" />
@@ -1085,7 +1085,7 @@
 		<Secondary Device="{NoDevice}" Key="" />
 	</VanityCameraScrollRight>
 	<ToggleFreeCam>
-		<Primary Device="Keyboard" Key="Key_Numpad_0" />
+		<Primary Device="Keyboard" Key="Key_Delete" />
 		<Secondary Device="{NoDevice}" Key="" />
 	</ToggleFreeCam>
 	<VanityCameraOne>

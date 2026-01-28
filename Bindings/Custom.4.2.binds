@@ -184,7 +184,7 @@
 		<Secondary Device="{NoDevice}" Key="" />
 	</SetSpeed50>
 	<SetSpeed75>
-		<Primary Device="{NoDevice}" Key="" />
+		<Primary Device="Keyboard" Key="Key_B" />
 		<Secondary Device="{NoDevice}" Key="" />
 	</SetSpeed75>
 	<SetSpeed100>
@@ -284,7 +284,7 @@
 		<Secondary Device="{NoDevice}" Key="" />
 	</HyperSuperCombination>
 	<Supercruise>
-		<Primary Device="{NoDevice}" Key="" />
+		<Primary Device="Keyboard" Key="Key_K" />
 		<Secondary Device="{NoDevice}" Key="" />
 	</Supercruise>
 	<Hyperspace>
@@ -510,7 +510,7 @@
 	<RightPanelFocusOptions Value="" />
 	<EnableCameraLockOn Value="1" />
 	<GalaxyMapOpen>
-		<Primary Device="{NoDevice}" Key="" />
+		<Primary Device="Keyboard" Key="Key_5" />
 		<Secondary Device="{NoDevice}" Key="" />
 	</GalaxyMapOpen>
 	<SystemMapOpen>
