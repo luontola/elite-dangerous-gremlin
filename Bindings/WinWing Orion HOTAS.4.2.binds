@@ -729,7 +729,7 @@
 		<Secondary Device="{NoDevice}" Key="" />
 		<ToggleOn Value="1" />
 	</ToggleDriveAssist>
-	<DriveAssistDefault Value="1" />
+	<DriveAssistDefault Value="0" />
 	<MouseBuggySteeringXMode Value="" />
 	<MouseBuggySteeringXDecay Value="0" />
 	<MouseBuggyRollingXMode Value="" />
@@ -776,7 +776,7 @@
 		<Secondary Device="{NoDevice}" Key="" />
 	</BuggyPitchDownButton>
 	<VerticalThrustersButton>
-		<Primary Device="4098BE41" Key="Joy_12" />
+		<Primary Device="4098BE32" Key="Joy_7" />
 		<Secondary Device="{NoDevice}" Key="" />
 		<ToggleOn Value="0" />
 	</VerticalThrustersButton>
@@ -789,7 +789,7 @@
 		<Secondary Device="4098BE41" Key="Joy_10" />
 	</BuggySecondaryFireButton>
 	<AutoBreakBuggyButton>
-		<Primary Device="4098BE41" Key="Joy_14" />
+		<Primary Device="4098BE32" Key="Joy_18" />
 		<Secondary Device="{NoDevice}" Key="" />
 		<ToggleOn Value="0" />
 	</AutoBreakBuggyButton>
