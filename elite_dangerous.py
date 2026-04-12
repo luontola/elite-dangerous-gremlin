@@ -464,7 +464,7 @@ def on_system_map(event):
     short_press(system_map_output)
 
 
-# SRV Steering
+# SRV steering
 
 joystick_roll_input = joystick_raw.axis(1)
 pedals_rudder_input = pedals_raw.axis(3)
@@ -513,22 +513,13 @@ def adjust_throttle():
     if has_flag(IN_SRV_FLAG):
         forward = right_pedal_toe_brake_input.value
         backward = left_pedal_toe_brake_input.value
-        throttle_output.value = srv_throttle_curve(calculate_throttle(forward, backward))
+        throttle_output.value = calculate_throttle(forward, backward)
     else:
         forward = right_throttle_input.value * -1
         backward = left_pedal_toe_brake_input.value
         if not travel_mode_input.is_pressed:
             forward = gremlin.input_devices.deadzone(forward, -0.8, 0, 0, 0.5)
         throttle_output.value = calculate_throttle(forward, backward)
-
-# more precision at lower speeds
-srv_throttle_curve = CubicSpline([
-    (-1.0, -1.0),   # Full back
-    (-0.5, -0.25),  # Half back -> quarter output
-    (0.0, 0.0),     # Center
-    (0.5, 0.25),    # Half forward -> quarter output
-    (1.0, 1.0)      # Full forward
-])
 
 def calculate_throttle(forward, backward):
     forward = scaled_0_to_1(forward)            #  0..1 range

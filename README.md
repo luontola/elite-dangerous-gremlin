@@ -66,10 +66,6 @@ In an SRV, the throttle is controlled with pedals like a car.
 The right rudder pedal's toe break is forward, and the left rudder pedal's toe break is backward.
 This feels more natural than using the throttle handle.
 
-The SRV (Scarab) accelerates by default too quickly.
-To make it easier to drive slowly, I apply a curve to the throttle.
-The curve gives more precision at low speeds.
-
 
 ### SRV mode steering
 
