@@ -359,7 +359,8 @@ night_vision_output = vjoy[1].button(2)
 
 night_vision = ToggleController(
     description="night vision",
-    is_aligned=lambda: has_flag(NIGHT_VISION_FLAG) == night_vision_input.is_pressed,
+    # TODO: also check LANDED_FLAG and IN_MAIN_SHIP_FLAG?
+    is_aligned=lambda: has_flag(DOCKED_FLAG) or has_flag(NIGHT_VISION_FLAG) == night_vision_input.is_pressed,
     output=night_vision_output,
 )
 
