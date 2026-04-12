@@ -98,6 +98,11 @@ To make laser mining more relaxing, I use a toggle switch as an alternative key 
 But as a safety measure, that switch works only in analysis mode.
 
 
+### Joystick curves
+
+I apply a curve to lateral thrusters to have more precision when landing.
+
+
 ## Getting started
 
 These files are provided as-is, without any support or guarantee.

@@ -67,7 +67,7 @@
 		<Secondary Device="{NoDevice}" Key="" />
 	</PitchDownButton>
 	<LateralThrustRaw>
-		<Binding Device="4098BE32" Key="Joy_XAxis" />
+		<Binding Device="vJoy" DeviceIndex="1" Key="Joy_XAxis" />
 		<Inverted Value="0" />
 		<Deadzone Value="0.00000000" />
 	</LateralThrustRaw>
@@ -80,7 +80,7 @@
 		<Secondary Device="{NoDevice}" Key="" />
 	</RightThrustButton>
 	<VerticalThrustRaw>
-		<Binding Device="4098BE32" Key="Joy_YAxis" />
+		<Binding Device="vJoy" DeviceIndex="1" Key="Joy_YAxis" />
 		<Inverted Value="1" />
 		<Deadzone Value="0.00000000" />
 	</VerticalThrustRaw>

@@ -549,7 +549,6 @@ class test_calculate_throttle(unittest.TestCase):
     def test_third_backward_is_needed_to_standstill_half_forward(self):
         self.assertAlmostEqual(calculate_throttle(forward=0, backward=-0.333), 0, places=3)
 
-
 # scales a -1..1 axis value to 0..1 range
 def scaled_0_to_1(value):
     return (value + 1) / 2
@@ -564,6 +563,33 @@ class test_scaled_0_to_1(unittest.TestCase):
             with self.subTest(input=input, expected=expected):
                 self.assertEqual(scaled_0_to_1(input), expected)
 
+
+# Lateral thrusters
+
+horizontal_thrusters_input = throttle_raw.axis(1)
+horizontal_thrusters_output = vjoy[1].axis(AxisName.X)
+vertical_thrusters_input = throttle_raw.axis(2)
+vertical_thrusters_output = vjoy[1].axis(AxisName.Y)
+
+@on_axis(horizontal_thrusters_input)
+def on_horizontal_thrust(event):
+    horizontal_thrusters_output.value = lateral_thrusters_curve(horizontal_thrusters_input.value)
+
+@on_axis(vertical_thrusters_input)
+def on_vertical_thrust(event):
+    vertical_thrusters_output.value = lateral_thrusters_curve(vertical_thrusters_input.value)
+
+# more precision at lower speeds (e.g. when landing)
+lateral_thrusters_curve = CubicSpline([
+    (-1.0, -1.0),  # Full back
+    (-0.5, -0.4),  # Half back -> 40% output
+    (0.0, 0.0),    # Center
+    (0.5, 0.4),    # Half forward -> 40% output
+    (1.0, 1.0)     # Full forward
+])
+
+
+# Run tests on startup
 
 def run_unit_tests():
     loader = unittest.TestLoader()
